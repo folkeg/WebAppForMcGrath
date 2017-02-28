@@ -1,0 +1,37 @@
+{% extends 'Documents/base.html' %} 
+
+{% block link %}href="{% url 'Documents:main' %}"{% endblock %}
+{% block body %}
+
+<!-- Content Section -->
+<section>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12 col-md-7">
+				<h3>Create Asset</h3>
+				<hr>
+				<form class="form-horizontal" action="" method="post">
+				{% csrf_token %}
+				{% include 'Documents/form-template.html' %}					
+					<div class="form-group" style="margin-left:40px"">
+						<button type="submit" class="btn btn-success">Save</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Footer -->
+<footer>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<p>Copyright &copy; McGrath RentCorp 2017</p>
+			</div>
+		</div>
+		<!-- /.row -->
+	</div>
+	<!-- /.container -->
+</footer>
+{% endblock %}

@@ -1,0 +1,10 @@
+Asset {{asset.id}}
+<ul> 
+    {% for document in asset.document_set.all %}
+        <li>manufacture_name {{document.manufacture_name}} <br>
+            document_type {{document.document_type}} <br>
+            model_number {{document.model_number}} <br>
+            a_number {{document.a_number}} <br>
+            decal_number {{document.decal_number}} </li>
+    {% endfor %}
+<ul>

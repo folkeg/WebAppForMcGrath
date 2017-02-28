@@ -1,0 +1,431 @@
+{% extends 'Documents/base.html' %} 
+
+{% block link %}href="{% url 'Documents:main' %}"{% endblock %}
+{% block body %}
+<!-- Content Section -->
+<section>
+	<div class="container">
+		<div class="row row-content">
+			<ul class="nav nav-tabs">
+				<li class="active" id="assetTab"><a href="#assetsearch"
+					data-toggle="tab"><h4>Asset Search</h4></a></li>
+				<li id="searchTab"><a href="#documentsearch" data-toggle="tab"><h4>Document
+							Search</h4></a></li>
+			</ul>
+			<div class="tab-content">
+				<div>
+					<p style="padding: 20px;"></p>
+				</div>
+				<div class="tab-pane fade in active" id="assetsearch">
+					<form class="form-horizontal">
+						<div class="form-group form-inline">
+							<label class="col-sm-2" for="MFCName">Manufacture Name</label> <select
+								class="form-control col-sm-10" id="MFCName">
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+							</select>
+						</div>
+						<div class="form-group form-inline">
+							<label class="col-sm-2" for="Agency">Approval Agency</label> <select
+								class="form-control col-sm-10" id="Agency">
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+							</select>
+						</div>
+						<div class="form-group form-inline">
+							<label class="col-sm-2">Serial Number</label> <input type="text"
+								class="form-control col-sm-10" placeholder="MFG Serial Number">
+						</div>
+						<div class="form-group form-inline">
+							<label class="col-sm-2">A Number</label> <input type="text"
+								class="form-control col-sm-10" placeholder="A Number">
+						</div>
+						<div class="form-group form-inline">
+							<label class="col-sm-2">Tag Number</label> <input type="text"
+								class="form-control col-sm-10" placeholder="Tag Number">
+						</div>
+						<div class="form-group form-inline">
+							<label class="col-sm-2">Status</label>
+							<div class="btn-group">
+								<button type="button" class="btn btn-success"
+									style="width: 90px">Active</button>
+								<button type="button" class="btn btn-danger" style="width: 90px">
+									Sold</button>
+							</div>
+						</div>
+						<div class="form-group form-inline">
+							<label class="col-sm-2">Description</label> <input type="text"
+								class="form-control col-sm-10" placeholder="Description"
+								style="width: 300px">
+						</div>
+						<div class="form-group">
+							<button id="assetSearchButton" type="button"
+								class="btn btn-default">Search</button>
+						</div>
+					</form>
+				</div>
+				<div class="tab-pane fade" id="documentsearch">
+					<form class="form-horizontal">
+						<div class="form-group form-inline">
+							<label class="col-sm-2">Document Type</label> <input type="text"
+								class="form-control col-sm-10" placeholder="Document Type">
+						</div>
+						<div class="form-group form-inline">
+							<label for="DocDate" class="col-sm-2">Document Date</label> <input
+								type="date" name="date" value=""> <span
+								class="glyphicon glyphicon-calendar"></span>
+						</div>
+						<div class="form-group form-inline">
+							<label for="RenewDate" class="col-sm-2">Renewal Date</label> <input
+								type="date" name="date" value=""> <span
+								class="glyphicon glyphicon-calendar"></span>
+						</div>
+						<div class="form-group form-inline">
+							<label class="col-sm-2">License/Decal Number</label> <input
+								type="text" class="form-control col-sm-10"
+								placeholder="License/Decal Number">
+						</div>
+						<div class="form-group form-inline">
+							<label class="col-sm-2">Model Number</label> <input type="text"
+								class="form-control col-sm-10" placeholder="Model Number">
+						</div>
+						<div class="form-group form-inline">
+							<label class="col-sm-2" for="MFCName">Manufacture Name</label> <select
+								class="form-control col-sm-10" id="MFCName">
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+							</select>
+						</div>
+						<div class="form-group form-inline">
+							<label class="col-sm-2">A Number</label> <input type="text"
+								class="form-control col-sm-10" placeholder="A Number">
+						</div>
+						<div class="form-group form-inline">
+							<label class="col-sm-2">Description</label> <input type="text"
+								class="form-control col-sm-10" placeholder="Description"
+								style="width: 300px">
+						</div>
+						<div class="form-group">
+							<button id="documentSearchButton" type="button"
+								class="btn btn-default">Search</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div>
+				<p style="padding: 20px;"></p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<table id="assetTable" class="table">
+					<thead>
+						<tr>
+							<th>Actions</th>
+							<th>#</th>
+							<th>Asset number</th>
+							<th>Serial number</th>
+							<th>Description</th>
+							<th>E-tag</th>
+							<th>Order#</th>
+							<th>Customer Name</th>
+							<th>Pick up/Call off date</th>
+							<th>Schedule return date</th>
+
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="active">
+							<th scope="row"><span
+								class="glyphicon glyphicon-pencil edit-assest"></span></th>
+							<th scope="row">1</th>
+							<td><a data-toggle="collapse" data-target="#demo1"
+								class="accordion-toggle">A 1023</a></td>
+							<td>8556825</td>
+							<td>21 K gal frac tank</td>
+							<td>569852</td>
+							<td>108967</td>
+							<td>Sierra's Dog House</td>
+							<td>2/10/2016</td>
+							<td>10/2/2016</td>
+						</tr>
+
+						<tr>
+							<td colspan="10" class="hiddenRow">
+								<div class="accordion-body collapse" id="demo1">
+									<table class="table">
+										<thead>
+											<tr>
+												<th>#</th>
+
+												<th>Application number</th>
+												<th>Actions</th>
+												<th>Document type</th>
+												<th>Description</th>
+												<th>Valid From</th>
+												<th>Valid To</th>
+											</tr>
+										</thead>
+										<tbody>
+
+											<tr class="active">
+												<th scope="row">1</th>
+
+												<td>02-107401</td>
+												<th scope="row"><span
+													class="glyphicon glyphicon-pencil"></span></th>
+												<td><a class="document">DSA-1</a></td>
+												<td>Approval Application</td>
+												<td></td>
+												<td></td>
+
+											</tr>
+											<tr>
+												<th scope="row"></th>
+
+												<td></td>
+												<th scope="row"><span
+													class="glyphicon glyphicon-pencil"></span></th>
+												<td><a class="document">DSA-5</a></td>
+												<td>In Plant Inspection</td>
+												<td>2/10/2016</td>
+												<td>2/12/2016</td>
+											</tr>
+
+											<tr>
+												<th scope="row"></th>
+
+												<td></td>
+												<th scope="row"><span
+													class="glyphicon glyphicon-pencil"></span></th>
+												<td><a class="document">DSA-102</a></td>
+												<td>Contract Confirmation</td>
+												<td></td>
+												<td></td>
+											</tr>
+
+											<tr>
+												<th scope="row"></th>
+
+												<td></td>
+												<th scope="row"><span
+													class="glyphicon glyphicon-pencil"></span></th>
+												<td><a class="document">DSA-6</a></td>
+												<td>Verification Report</td>
+												<td>4/5/2016</td>
+												<td>7/5/2017</td>
+											</tr>
+
+										</tbody>
+									</table>
+								</div>
+							</td>
+						</tr>
+
+						<tr class="active">
+							<th scope="row"><span
+								class="glyphicon glyphicon-pencil edit-assest"></span></th>
+							<th scope="row">2</th>
+							<td><a data-toggle="collapse" data-target="#demo2"
+								class="accordion-toggle">A 1024</a></td>
+							<td>8774282</td>
+							<td>21 K gal frac tank</td>
+							<td>578921</td>
+							<td>108967</td>
+							<td>Sierra's Dog House</td>
+							<td>2/10/2016</td>
+							<td>10/2/2016</td>
+
+						</tr>
+
+						<tr>
+							<td colspan="10" class="hiddenRow">
+								<div class="accordion-body collapse" id="demo2">
+									<table class="table">
+										<thead>
+											<tr>
+												<th>#</th>
+
+												<th>Application number</th>
+												<th>Actions</th>
+												<th>Document type</th>
+												<th>Description</th>
+												<th>Valid From</th>
+												<th>Valid To</th>
+											</tr>
+										</thead>
+										<tbody>
+
+											<tr class="active">
+												<th scope="row">1</th>
+
+												<td>02-107401</td>
+												<th scope="row"><span
+													class="glyphicon glyphicon-pencil"></span></th>
+												<td><a class="document">DSA-1</a></td>
+												<td>Approval Application</td>
+												<td></td>
+												<td></td>
+
+											</tr>
+											<tr>
+												<th scope="row"></th>
+
+												<td></td>
+												<th scope="row"><span
+													class="glyphicon glyphicon-pencil"></span></th>
+												<td><a class="document">DSA-5</a></td>
+												<td>In Plant Inspection</td>
+												<td>2/10/2016</td>
+												<td>2/12/2016</td>
+											</tr>
+
+											<tr>
+												<th scope="row"></th>
+
+												<td></td>
+												<th scope="row"><span
+													class="glyphicon glyphicon-pencil"></span></th>
+												<td><a class="document">DSA-102</a></td>
+												<td>Contract Confirmation</td>
+												<td></td>
+												<td></td>
+											</tr>
+
+											<tr>
+												<th scope="row"></th>
+
+												<td></td>
+												<th scope="row"><span
+													class="glyphicon glyphicon-pencil"></span></th>
+												<td><a class="document">DSA-6</a></td>
+												<td>Verification Report</td>
+												<td>4/5/2016</td>
+												<td>7/5/2017</td>
+											</tr>
+
+										</tbody>
+									</table>
+								</div>
+							</td>
+						</tr>
+
+					</tbody>
+				</table>
+				<table id="documentTable" class="table">
+					<thead>
+						<tr>
+							<th>#</th>
+
+							<th>Application number</th>
+							<th>Actions</th>
+							<th>Document type</th>
+							<th>Description</th>
+							<th>Valid From</th>
+							<th>Valid To</th>
+						</tr>
+					</thead>
+					<tbody>
+
+						<tr class="active">
+							<th scope="row">1</th>
+
+							<td>02-107401</td>
+							<th scope="row"><span
+								class="glyphicon glyphicon-pencil edit-document"></th>
+							<td><a class="document">DSA-1</a></td>
+							<td>Approval Application</td>
+							<td></td>
+							<td></td>
+
+						</tr>
+						<tr>
+							<th scope="row"></th>
+
+							<td></td>
+							<th scope="row"><span
+								class="glyphicon glyphicon-pencil edit-document"></th>
+							<td><a class="document">DSA-5</a></td>
+							<td>In Plant Inspection</td>
+							<td>2/10/2016</td>
+							<td>2/12/2016</td>
+						</tr>
+
+						<tr>
+							<th scope="row"></th>
+
+							<td></td>
+							<th scope="row"><span
+								class="glyphicon glyphicon-pencil edit-document"></th>
+							<td><a class="document">DSA-102</a></td>
+							<td>Contract Confirmation</td>
+							<td></td>
+							<td></td>
+						</tr>
+
+						<tr>
+							<th scope="row"></th>
+
+							<td></td>
+							<th scope="row"><span
+								class="glyphicon glyphicon-pencil edit-document"></th>
+							<td><a class="document">DSA-6</a></td>
+							<td>Verification Report</td>
+							<td>4/5/2016</td>
+							<td>7/5/2017</td>
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Footer -->
+<footer>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<p>Copyright &copy; McGrath RentCorp 2017</p>
+			</div>
+		</div>
+		<!-- /.row -->
+	</div>
+	<!-- /.container -->
+</footer>
+
+<!-- JavaScript -->
+<script type="text/javascript">
+	$("#assetTable").hide();
+	$("#documentTable").hide();
+	$(".nav-tabs").click(function() {
+		$("table").hide();
+
+	});
+
+	$("#assetSearchButton").click(function() {
+		$("#assetTable").show();
+
+	});
+
+	$("#documentSearchButton").click(function() {
+		$("#documentTable").show();
+
+	});
+
+	$(".document").click(function() {
+		window.location.href = "./DSADocument.html";
+	});
+
+	$(".edit-assest").click(function() {
+		window.location.href = "./AssestEdit.html";
+	});
+</script>
+{% endblock %}

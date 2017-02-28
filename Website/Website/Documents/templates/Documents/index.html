@@ -1,0 +1,5 @@
+<ul>
+    {% for asset in all_assets %}
+    <li><a href="{% url 'Documents:detail' asset.id %}"> {{asset.manufacture_name}} </a></li> 
+    {% endfor %}
+</ul>
