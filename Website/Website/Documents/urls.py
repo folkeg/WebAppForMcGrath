@@ -7,13 +7,15 @@ urlpatterns = [
     # Documents/
     url(r'^$', views.IndexView.as_view(), name='index'),
     # Documents/asset_id/
-    url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='detail'),
+    url(r'^(?P<pk>[0-9]+)/$', views.AssetDetailView.as_view(), name='assetDetail'),
     # Documents/main/assetCreate
-    url(r'^asset/main/assetCreate/$', views.AssetCreate.as_view(), name='assetCreate'),
+    url(r'^main/assetCreate/$', views.AssetCreate.as_view(), name='assetCreate'),
     # Documents/main/docCreate
-    url(r'^asset/main/docCreate/$', views.DocCreate.as_view(), name='docCreate'),
+    url(r'^main/docCreate/$', views.DocCreate.as_view(), name='docCreate'),
     # Documents/login/
-    url(r'^login/$', views.login, name='login'),
+    url(r'^login/$', views.UserFormView.as_view(), name='login'),
+    # Documents/logoutuser/
+    url(r'^logoutuser/$', views.logoutuser, name='logout'),
     # Documents/main/
     url(r'^main/$', views.main, name='main'),
     # Documents/main/search

@@ -44,7 +44,7 @@
 				</ul>
 
 				<ul class="nav navbar-nav  navbar-right">
-					<li><a href="#"> <span class="glyphicon glyphicon-off"
+					<li><a href="{% url 'Documents:logout' %}"> <span class="glyphicon glyphicon-off"
 							aria-hidden="true"></span>&nbsp; Logout
 					</a></li>
 				</ul>
@@ -56,4 +56,15 @@
 {% block body %}
 {% endblock %}
 </body>
+<footer>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<p>Copyright &copy; McGrath RentCorp 2017</p>
+			</div>
+		</div>
+		<!-- /.row -->
+	</div>
+	<!-- /.container -->
+</footer>
 </html>
