@@ -1,77 +1,5 @@
-{% extends 'Documents/base.html' %} 
+$(function() {
 
-{% block body %}
-<!-- Content Section -->
-<section>
-	<div class="container">
-		<div class="row row-content">
-			<ul class="nav nav-tabs">
-				<li class="active" id="assetTab"><a href="#assetsearch"
-					data-toggle="tab"><h4>Asset Search</h4></a></li>
-				<li id="searchTab"><a href="#documentsearch" data-toggle="tab"><h4>Document
-							Search</h4></a></li>
-			</ul>
-			<div class="tab-content">
-				<div>
-					<p style="padding: 20px;"></p>
-				</div>
-				<div class="tab-pane fade in active" id="assetsearch">
-					<form class="form-horizontal" action="" method="post">
-						{% csrf_token %} 
-						{% for field in assetform %}
-						<div class="form-group">
-							<div class="col-sm-offset-2 col-sm-10">
-								<span class="text-danger small">{{ field.errors }}</span>
-							</div>
-							<label class="control-label col-sm-4">{{ field.label_tag}}</label>
-							<div class="col-sm-8">{{ field }}</div>
-						</div>
-						{% endfor %}
-						<div class="form-group" style="margin-left: 40px"">
-							<button type="submit" name="assetSearch" value="assetSearch" class="btn btn-success">Search</button>
-						</div>
-					</form>
-				</div>
-				<div class="tab-pane fade" id="documentsearch">
-					<form class="form-horizontal" action="" method="post">
-						{% csrf_token %} 
-						{% for field in docform %}
-						<div class="form-group">
-							<label class="control-label col-sm-4">{{ field.label_tag}}</label>
-							<div class="col-sm-8">{{ field }}</div>
-						</div>
-						{% endfor %}
-						<div class="form-group" style="margin-left: 40px"">
-							<button type="submit" name="docSearch" value="docSearch" class="btn btn-success">Search</button>
-						</div>
-					</form>
-				</div>
-			</div>
-			<div>
-				<p style="padding: 20px;"></p>
-			</div>
-		</div>
-		<div class="row row-content">
-		       {{errorMessage}}
-               {% for asset in result %}
-               <ul>
-                   <li>manufacture name : {{asset.manufacture_name}}</li> 
-                   <li>approval_agency : {{asset.approval_agency}}</li> 
-                   <li>manufacture_serial_number : {{asset.manufacture_serial_number}}</li> 
-                   <li>asset.a_number : {{asset.a_number}}</li> 
-                   <li>tag_number : {{asset.tag_number}}</li> 
-               </ul>
-               {% endfor %}
-		</div>
-	</div>
-</section>
-
-<script>
-$('#search_asset').on('submit', function(event){
-    event.preventDefault();
-    console.log("form submitted!")  // sanity check
-    create_post();
-});
 
     // This function gets cookie with a given name
     function getCookie(name) {
@@ -128,7 +56,7 @@ $('#search_asset').on('submit', function(event){
     function create_post() {
         console.log("create post is working!") // sanity check
         $.ajax({
-            url : "#", // the endpoint
+            url : "create_post/", // the endpoint
             type : "POST", // http method
             data : { search_asset : $('#post-text').val() }, // data sent with the post request
 
@@ -149,5 +77,5 @@ $('#search_asset').on('submit', function(event){
     };
 
 
-</script>
-{% endblock %}
+});
+

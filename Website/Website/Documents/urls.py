@@ -12,14 +12,14 @@ urlpatterns = [
     url(r'^main/assetCreate/$', views.AssetCreate.as_view(), name='assetCreate'),
     # Documents/main/docCreate
     url(r'^main/docCreate/$', views.DocCreate.as_view(), name='docCreate'),
+    # Documents/main/search
+    url(r'^main/search/$', views.Search.as_view(), name='search'),
     # Documents/login/
     url(r'^login/$', views.UserFormView.as_view(), name='login'),
     # Documents/logoutuser/
     url(r'^logoutuser/$', views.logoutuser, name='logout'),
     # Documents/main/
     url(r'^main/$', views.main, name='main'),
-    # Documents/main/search
-    url(r'^main/search/$', views.search, name='search'),
     # Documents/main/search/assetsEdit
     url(r'^main/search/assetsEdit$', views.assetEdit, name='assetsEdit'),
     # Documents/main/search/docEdit

@@ -13,9 +13,14 @@
 <!-- Custom CSS -->
 <link rel="stylesheet" href="{% static 'Documents/css/styles.css' %}" />
 <!-- jQuery -->
-<script src="{% static 'Documents/js/jquery.js' %}"></script>
+<script src="{% static 'Documents/scripts/jquery.js' %}"></script>
 <!-- Bootstrap Core JavaScript -->
-<script src="{% static 'Documents/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'Documents/scripts/bootstrap.min.js' %}"></script>
+
+
+<!-- AngularJs -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+
 
 </head>
 
@@ -31,7 +36,7 @@
 						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" {% block link %}href="{% url 'Documents:login' %}"{% endblock %}><img
+				<a class="navbar-brand" {% block link %}href="{% url 'Documents:main' %}"{% endblock %}><img
 					src="{% static 'Documents/images/logo.png' %}"></a>
 			</div>
 

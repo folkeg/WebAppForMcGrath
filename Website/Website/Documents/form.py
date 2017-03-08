@@ -18,4 +18,19 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'password']
+
+class AssetSearchForm(forms.Form):
+    manufacture_name = forms.CharField(max_length=500, required=False)
+    approval_agency = forms.CharField(max_length=500, required=False)
+    manufacture_serial_number = forms.CharField(max_length=150, required=False)
+    a_number = forms.CharField(max_length=150, required=False)
+    tag_number = forms.CharField(max_length=150, required=False)
+
+class DocSearchForm(forms.Form):
+    manufacture_name = forms.CharField(max_length=500)
+    document_type = forms.CharField(max_length=250)
+    model_number = forms.CharField(max_length=150)
+    a_number = forms.CharField(max_length=150)
+    decal_number = forms.CharField(max_length=150)
+
         

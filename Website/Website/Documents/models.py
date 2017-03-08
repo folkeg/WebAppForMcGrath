@@ -9,13 +9,13 @@ class Asset(models.Model):
     tag_number = models.CharField(max_length=150)
     
     def get_absolute_url(self):
-        return reverse('Documents:detail', kwargs={'pk':self.pk})
+        return reverse('Documents:assetCreate')
     
     def __str__(self):
         return 'a number : ' + self.a_number + ', manufacture serial number : ' + self.manufacture_serial_number
 
 class Document(models.Model):
-    asset = models.ForeignKey(Asset, on_delete=models.CASCADE)
+    asset = models.ManyToManyField(Asset)
     manufacture_name = models.CharField(max_length=500)
     document_type = models.CharField(max_length=250)
     model_number = models.CharField(max_length=150)
@@ -23,7 +23,7 @@ class Document(models.Model):
     decal_number = models.CharField(max_length=150)
     
     def get_absolute_url(self):
-        return reverse('Documents:detail', kwargs={'pk':self.pk})
+        return reverse('Documents:docCreate')
     
     def __str__(self):
         return 'document_type : ' + self.document_type + ', decal_number : ' + self.decal_number

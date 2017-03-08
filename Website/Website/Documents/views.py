@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import View
-from .form import AssetForm, DocForm, UserForm
+from .form import AssetForm, DocForm, UserForm, AssetSearchForm, DocSearchForm
 from .models import Asset, Document
 from aetypes import template
 
@@ -43,27 +43,64 @@ class UserFormView(View):
         login_invalid = 'login is invalid, username or password is wrong'
         return render(request, self.template_name, {'form': form, 'error_message' :login_invalid})
 
-
+@method_decorator(login_required, name='dispatch')
 class AssetCreate(CreateView):
     form_class = AssetForm
     template_name = 'Documents/assetCreate.html'
-    
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(AssetCreate, self).dispatch(*args, **kwargs)
     
 @method_decorator(login_required, name='dispatch')
 class DocCreate(CreateView):
     form_class = DocForm
     template_name = 'Documents/docCreate.html'
 
+@method_decorator(login_required, name='dispatch')
+class Search(View):
+    assetform_class = AssetSearchForm
+    docform_class = DocSearchForm
+    template_name = 'Documents/search.html'
+    
+    def get(self, request):
+        assetform = self.assetform_class(None)
+        docform = self.docform_class(None)
+        return render(request, self.template_name, {'assetform': assetform,'docform' : docform})
+     
+    def post(self, request):
+        assetform = self.assetform_class(None)
+        docform = self.docform_class(None)
+            
+        result = Asset.objects.all()
+        assetDict = {}
+        assetDict['manufacture_name'] = request.POST.get('manufacture_name')
+        assetDict['approval_agency'] = request.POST.get('approval_agency')
+        assetDict['manufacture_serial_number'] = request.POST.get('manufacture_serial_number')
+        assetDict['a_number'] = request.POST.get('a_number')
+        assetDict['tag_number'] = request.POST.get('tag_number')
+        
+        for key, value in assetDict.items():
+            if key=='manufacture_name' and value:
+                result = Asset.objects.filter(manufacture_name = value)
+            if key=='approval_agency' and value:
+                result = Asset.objects.filter(approval_agency = value)
+            if key=='manufacture_serial_number' and value:
+                result = Asset.objects.filter(manufacture_serial_number = value)
+            if key=='a_number' and value:
+                result = Asset.objects.filter(a_number = value)
+            if key=='tag_number' and value:
+                result = Asset.objects.filter(tag_number = value)
+        
+        errorMessage = ""
+        
+        if not result:
+            errorMessage = "No result found"
+        
+        context = {'assetform': assetform,'docform' : docform, 'result':result, 'errorMessage' : errorMessage}
+        
+        return render(request, self.template_name, context)
+          
+
 @login_required(login_url='Documents:login')
 def main(request):       
     return render(request, 'Documents/mainPage.html')
-
-@method_decorator(login_required, name='dispatch')
-def search(request):       
-    return render(request, 'Documents/search.html')
 
 @method_decorator(login_required, name='dispatch')
 def assetEdit(request):       
