@@ -67,26 +67,60 @@ class Search(View):
     def post(self, request):
         assetform = self.assetform_class(None)
         docform = self.docform_class(None)
-            
-        result = Asset.objects.all()
-        assetDict = {}
-        assetDict['manufacture_name'] = request.POST.get('manufacture_name')
-        assetDict['approval_agency'] = request.POST.get('approval_agency')
-        assetDict['manufacture_serial_number'] = request.POST.get('manufacture_serial_number')
-        assetDict['a_number'] = request.POST.get('a_number')
-        assetDict['tag_number'] = request.POST.get('tag_number')
         
-        for key, value in assetDict.items():
-            if key=='manufacture_name' and value:
-                result = Asset.objects.filter(manufacture_name = value)
-            if key=='approval_agency' and value:
-                result = Asset.objects.filter(approval_agency = value)
-            if key=='manufacture_serial_number' and value:
-                result = Asset.objects.filter(manufacture_serial_number = value)
-            if key=='a_number' and value:
-                result = Asset.objects.filter(a_number = value)
-            if key=='tag_number' and value:
-                result = Asset.objects.filter(tag_number = value)
+        if(request.POST.get('search') == 'assetSearch'):
+            result = Asset.objects.all()
+            assetDict = {}
+            assetDict['asset_type'] = request.POST.get('asset_type')
+            assetDict['status'] = request.POST.get('status')
+            assetDict['manufacture_name'] = request.POST.get('manufacture_name')
+            assetDict['approval_agency'] = request.POST.get('approval_agency')
+            assetDict['serial_number'] = request.POST.get('serial_number')
+            assetDict['a_number'] = request.POST.get('a_number')
+            assetDict['tag_number'] = request.POST.get('tag_number')
+        
+            for key, value in assetDict.items():
+                if key=='asset_type' and value:
+                    result = Asset.objects.filter(asset_type = value)
+                if key=='status' and value:
+                    result = Asset.objects.filter(status = value)
+                if key=='manufacture_name' and value:
+                    result = Asset.objects.filter(manufacture_name = value)
+                if key=='approval_agency' and value:
+                    result = Asset.objects.filter(approval_agency = value)
+                if key=='serial_number' and value:
+                    result = Asset.objects.filter(serial_number = value)
+                if key=='a_number' and value:
+                    result = Asset.objects.filter(a_number = value)
+                if key=='tag_number' and value:
+                    result = Asset.objects.filter(tag_number = value)
+                            
+        elif(request.POST.get('search') == 'docSearch'):
+            result = Document.objects.all()
+            docDict = {}
+            docDict['manufacture_name'] = request.POST.get('manufacture_name')
+            docDict['document_date'] = request.POST.get('document_date')
+            docDict['renewal_date'] = request.POST.get('renewal_date')
+            docDict['modal_number'] = request.POST.get('modal_number')
+            docDict['license_decal_number'] = request.POST.get('license_decal_number')
+            docDict['a_number'] = request.POST.get('a_number')
+            docDict['document_type'] = request.POST.get('document_type')
+        
+            for key, value in docDict.items():
+                if key=='manufacture_name' and value:
+                    result = Document.objects.filter(manufacture_name = value)
+                if key=='document_date' and value:
+                    result = Document.objects.filter(document_date = value)
+                if key=='renewal_date' and value:
+                    result = Document.objects.filter(renewal_date = value)
+                if key=='modal_number' and value:
+                    result = Document.objects.filter(modal_number = value)
+                if key=='license_decal_number' and value:
+                    result = Document.objects.filter(license_decal_number = value)
+                if key=='a_number' and value:
+                    result = Document.objects.filter(a_number = value)
+                if key=='document_type' and value:
+                    result = Document.objects.filter(document_type = value)
         
         errorMessage = ""
         

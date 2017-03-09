@@ -28,7 +28,7 @@
 						</div>
 						{% endfor %}
 						<div class="form-group" style="margin-left: 40px"">
-							<button type="submit" name="assetSearch" value="assetSearch" class="btn btn-success">Search</button>
+							<button type="submit" name="search" value="assetSearch" class="btn btn-success">Search</button>
 						</div>
 					</form>
 				</div>
@@ -42,7 +42,7 @@
 						</div>
 						{% endfor %}
 						<div class="form-group" style="margin-left: 40px"">
-							<button type="submit" name="docSearch" value="docSearch" class="btn btn-success">Search</button>
+							<button type="submit" name="search" value="docSearch" class="btn btn-success">Search</button>
 						</div>
 					</form>
 				</div>
@@ -53,13 +53,9 @@
 		</div>
 		<div class="row row-content">
 		       {{errorMessage}}
-               {% for asset in result %}
+               {% for item in result %}
                <ul>
-                   <li>manufacture name : {{asset.manufacture_name}}</li> 
-                   <li>approval_agency : {{asset.approval_agency}}</li> 
-                   <li>manufacture_serial_number : {{asset.manufacture_serial_number}}</li> 
-                   <li>asset.a_number : {{asset.a_number}}</li> 
-                   <li>tag_number : {{asset.tag_number}}</li> 
+                   <li>{{item}}</li>
                </ul>
                {% endfor %}
 		</div>
