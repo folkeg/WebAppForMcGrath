@@ -55,7 +55,7 @@ function create_post() {
 	$.ajax({
 		url : "#", // the endpoint
 		type : "POST", // http method
-		data : $('#asset_data, #document_data').serialize(),
+		data : $('#asset_data').serialize(),
 		// handle a successful response
         success : function(json) {       	
         	console.log(json);        
@@ -74,14 +74,21 @@ function create_post() {
 
 function addData(result) {
 	document.getElementById("asset_table").style.display="table";
-	var newRows = "";
+	var newRows = " ";
 	for(var item in result) {
-	    var arr = item.split(",");
-	    newRows += "<tr>";  
-	    for(var i = 0; i < arr.length; i++){
-	    	newRows += "<td align='center'>" + arr[i] + "</td>";
-	    }
-	    newRows += "</tr>";
+		if(result.hasOwnProperty(item)){
+			var eachItem = result[item];
+			console.log(eachItem);			
+	        newRows += "<tr><td></td>"; 
+	        for(var key in eachItem){
+	        	console.log(key);
+	    	    if(eachItem.hasOwnProperty(key)) {
+	    	    	console.log(eachItem[key]);
+	    	        newRows += "<td align='center'>" + eachItem[key] + "</td>";
+	    	    }
+	        }
+	        newRows += "</tr>";
+		}
 	    document.getElementById("asset_row").innerHTML = newRows;
 	}
 };

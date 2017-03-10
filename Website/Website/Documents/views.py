@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render, redirect
@@ -10,7 +9,6 @@ from .form import AssetForm, DocForm, UserForm, AssetSearchForm, DocSearchForm
 from .models import Asset, Document
 from aetypes import template
 from django.http import HttpResponse
-from utils import MyEncoder
 import json
 
 class IndexView(generic.ListView):
@@ -68,10 +66,10 @@ class Search(View):
         return render(request, self.template_name, {'assetform': assetform,'docform' : docform})
      
     def post(self, request):
-        assetform = self.assetform_class(None)
-        docform = self.docform_class(None)
         result = None
-                     
+        
+        print request.POST.get('serial_number'), request.POST.get('a_number'), request.POST.get('tag_number'), request.POST.get('manufacture_name')
+     
         if(request.POST.get('approval_agency')):
             result = Asset.objects.all()
             assetDict = {}
@@ -131,7 +129,7 @@ class Search(View):
             errorMessage = "Not found"
             return HttpResponse(json.dumps(errorMessage), content_type="application/json")
         
-        return HttpResponse(json.dumps(result, cls=MyEncoder), content_type="application/json")
+        return HttpResponse(json.dumps([dict(item) for item in result.values()]), content_type="application/json")
           
 
 @login_required(login_url='Documents:login')

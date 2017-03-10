@@ -28,7 +28,7 @@
 						</div>
 					</form>
 				</div>
-				<div class="tab-pane fade" id="document_search">
+				<!-- <div class="tab-pane fade" id="document_search">
 					<form class="form-horizontal" action="" method="post" id="document_data">
 						{% csrf_token %} {% for field in docform %}
 						<div class="form-group">
@@ -40,7 +40,7 @@
 							<button type="submit" class="btn btn-success">Search</button>
 						</div>
 					</form>
-				</div>
+				</div> -->
 			</div>
 			<div>
 				<p style="padding: 20px;"></p>
@@ -93,7 +93,7 @@
 
  
 <script>
-	$('#asset_data, #document_data').on('submit', function(event) {
+	$('#asset_data').on('submit', function(event) {
 		event.preventDefault();
 		console.log("form submitted!") 
 		create_post();

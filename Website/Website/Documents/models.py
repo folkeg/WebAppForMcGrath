@@ -1,16 +1,17 @@
 from django.db import models
 from django.core.urlresolvers import reverse
-from .utils import ApprovalAgencyChoices, AssetTypeChoices, StatusChoices, DocumentTypeChoices
+from .utils import StatusChoices, DocumentTypeChoices
 
 class Asset(models.Model):
     manufacture_name = models.CharField(max_length = 500)
-    approval_agency = models.CharField(max_length = 500, choices = ApprovalAgencyChoices)
-    asset_type = models.CharField(max_length = 500, choices = AssetTypeChoices)
+    approval_agency = models.CharField(max_length = 500)
+    asset_type = models.CharField(max_length = 500)
     serial_number = models.CharField(max_length = 500)
     a_number = models.CharField(max_length = 500)
     tag_number = models.CharField(max_length = 500)
     status = models.CharField(max_length = 500, choices = StatusChoices)
     description = models.CharField(max_length = 500, null=True)
+    
     
     def get_absolute_url(self):
         return reverse('Documents:assetCreate')
@@ -34,4 +35,17 @@ class Document(models.Model):
     
     def __str__(self):
         return self.document_type + ',' + self.document_date + ',' + self.renewal_date + ',' + self.model_number + ',' + self.manufacture_name + ',' + self.a_number + ',' + self.license_decal_number + ',' + self.document_description
+
+class AssetType(models.Model):
+    asset_type = models.CharField(max_length = 500)
+    
+    def __str__(self):
+        return self.asset_type
+
+class ApprovalAgency(models.Model):
+    approval_agency = models.CharField(max_length = 500)
+    
+    def __str__(self):
+        return self.approval_agency
+
 

@@ -1,9 +1,11 @@
 from django import forms
-from .models import Asset, Document
+from .models import Asset, Document, AssetType, ApprovalAgency
 from django.contrib.auth.models import User
 from .utils import *
 
 class AssetForm(forms.ModelForm):
+    approval_agency = forms.ModelChoiceField(queryset = ApprovalAgency.objects.all(), required=False)
+    asset_type = forms.ModelChoiceField(queryset = AssetType.objects.all(), required=False)
     class Meta:
         model = Asset
         fields = ['approval_agency', 'asset_type', 'manufacture_name', 'serial_number', 'a_number', 'tag_number', 'status', 'description']
@@ -20,8 +22,8 @@ class UserForm(forms.ModelForm):
         fields = ['username', 'password']
 
 class AssetSearchForm(forms.Form):
-    approval_agency = forms.ChoiceField(choices = ApprovalAgencyChoices, label="Approval_agency", initial='', widget=forms.Select(), required=False)
-    asset_type = forms.ChoiceField(choices = AssetTypeChoices, label="Asset_type", initial='', widget=forms.Select(), required=False)
+    approval_agency = forms.ModelChoiceField(queryset = ApprovalAgency.objects.all(), required=False)
+    asset_type = forms.ModelChoiceField(queryset = AssetType.objects.all(), required=False)
     manufacture_name = forms.CharField(required=False)
     serial_number = forms.CharField(required=False)
     status = forms.ChoiceField(choices = StatusChoices, label="Status", initial='', widget=forms.Select(), required=False)
