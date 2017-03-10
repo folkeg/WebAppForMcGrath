@@ -1,14 +1,15 @@
 from django.db import models
 from django.core.urlresolvers import reverse
+from .utils import ApprovalAgencyChoices, AssetTypeChoices, StatusChoices, DocumentTypeChoices
 
 class Asset(models.Model):
     manufacture_name = models.CharField(max_length = 500)
-    approval_agency = models.CharField(max_length = 500)
-    asset_type = models.CharField(max_length = 500, null=True)
-    serial_number = models.CharField(max_length = 500, null=True)
+    approval_agency = models.CharField(max_length = 500, choices = ApprovalAgencyChoices)
+    asset_type = models.CharField(max_length = 500, choices = AssetTypeChoices)
+    serial_number = models.CharField(max_length = 500)
     a_number = models.CharField(max_length = 500)
     tag_number = models.CharField(max_length = 500)
-    status = models.CharField(max_length = 500, null=True)
+    status = models.CharField(max_length = 500, choices = StatusChoices)
     description = models.CharField(max_length = 500, null=True)
     
     def get_absolute_url(self):
@@ -20,7 +21,7 @@ class Asset(models.Model):
 class Document(models.Model):
     asset = models.ManyToManyField(Asset)
     manufacture_name = models.CharField(max_length = 500)
-    document_type = models.CharField(max_length = 500)
+    document_type = models.CharField(max_length = 500, choices = DocumentTypeChoices)
     document_date = models.CharField(max_length = 500, null=True)
     renewal_date = models.CharField(max_length = 500, null=True)
     model_number = models.CharField(max_length = 500, null=True)

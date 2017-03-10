@@ -1,48 +1,43 @@
-{% extends 'Documents/base.html' %} 
-
-{% block body %}
+{% extends 'Documents/base.html' %} {% block body %}
 <!-- Content Section -->
 <section>
 	<div class="container">
 		<div class="row row-content">
 			<ul class="nav nav-tabs">
-				<li class="active" id="assetTab"><a href="#assetsearch"
+				<li class="active" id="assetTab"><a href="#asset_search"
 					data-toggle="tab"><h4>Asset Search</h4></a></li>
-				<li id="searchTab"><a href="#documentsearch" data-toggle="tab"><h4>Document
+				<li id="searchTab"><a href="#document_search" data-toggle="tab"><h4>Document
 							Search</h4></a></li>
 			</ul>
 			<div class="tab-content">
 				<div>
 					<p style="padding: 20px;"></p>
 				</div>
-				<div class="tab-pane fade in active" id="assetsearch">
-					<form class="form-horizontal" action="" method="post">
+				<div class="tab-pane fade in active" id="asset_search">
+					<form class="form-horizontal" action="" method="post" id="asset_data">
 						{% csrf_token %} 
 						{% for field in assetform %}
 						<div class="form-group">
-							<div class="col-sm-offset-2 col-sm-10">
-								<span class="text-danger small">{{ field.errors }}</span>
-							</div>
-							<label class="control-label col-sm-4">{{ field.label_tag}}</label>
-							<div class="col-sm-8">{{ field }}</div>
+							<label class="control-label col-sm-2">
+								{{field.label_tag}}</label>
+							<div class="col-sm-10">{{ field }}</div>
 						</div>
 						{% endfor %}
 						<div class="form-group" style="margin-left: 40px"">
-							<button type="submit" name="search" value="assetSearch" class="btn btn-success">Search</button>
+							<button type="submit" class="btn btn-success">Search</button>
 						</div>
 					</form>
 				</div>
-				<div class="tab-pane fade" id="documentsearch">
-					<form class="form-horizontal" action="" method="post">
-						{% csrf_token %} 
-						{% for field in docform %}
+				<div class="tab-pane fade" id="document_search">
+					<form class="form-horizontal" action="" method="post" id="document_data">
+						{% csrf_token %} {% for field in docform %}
 						<div class="form-group">
-							<label class="control-label col-sm-4">{{ field.label_tag}}</label>
-							<div class="col-sm-8">{{ field }}</div>
+							<label class="control-label col-sm-2">{{field.label_tag}}</label>
+							<div class="col-sm-10">{{ field }}</div>
 						</div>
 						{% endfor %}
 						<div class="form-group" style="margin-left: 40px"">
-							<button type="submit" name="search" value="docSearch" class="btn btn-success">Search</button>
+							<button type="submit" class="btn btn-success">Search</button>
 						</div>
 					</form>
 				</div>
@@ -51,99 +46,58 @@
 				<p style="padding: 20px;"></p>
 			</div>
 		</div>
+		{{errorMessage}}
+ 
 		<div class="row row-content">
-		       {{errorMessage}}
-               {% for item in result %}
-               <ul>
-                   <li>{{item}}</li>
-               </ul>
-               {% endfor %}
-		</div>
+			{{errorMessage}}
+			<table class="table" id="asset_table" style="display: none">
+				<thead>
+					<tr>
+					    <th>Actions</th>
+						<th>#</th>
+						<th>Approval_agency</th>
+						<th>Asset_type</th>
+						<th>Manufacture_name</th>
+						<th>Status</th>
+                        <th>A_number</th>
+						<th>Serial_number</th>
+						<th>Tag_number</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody id="asset_row">
+
+				</tbody>
+			</table>
+			<table class="table" id="document_table" style="display: none">
+				<thead>
+					<tr>
+					    <th>Actions</th>
+						<th>#</th>
+						<th>Document_type</th>
+						<th>Document_date</th>
+						<th>Renewal_date</th>
+						<th>Model_number</th>
+						<th>Manufacture_name</th>
+						<th>A_number</th>
+						<th>License_decal_number</th>
+						<th>Document_description</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div> 
 	</div>
 </section>
 
+ 
 <script>
-$('#search_asset').on('submit', function(event){
-    event.preventDefault();
-    console.log("form submitted!")  // sanity check
-    create_post();
-});
-
-    // This function gets cookie with a given name
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie != '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    var csrftoken = getCookie('csrftoken');
-
-    /*
-    The functions below will create a header with csrftoken
-    */
-
-    function csrfSafeMethod(method) {
-        // these HTTP methods do not require CSRF protection
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
-    function sameOrigin(url) {
-        // test that a given url is a same-origin URL
-        // url could be relative or scheme relative or absolute
-        var host = document.location.host; // host + port
-        var protocol = document.location.protocol;
-        var sr_origin = '//' + host;
-        var origin = protocol + sr_origin;
-        // Allow absolute or scheme relative URLs to same origin
-        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
-            (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
-            // or any other URL that isn't scheme relative or absolute i.e relative.
-            !(/^(\/\/|http:|https:).*/.test(url));
-    }
-
-    $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-            if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
-                // Send the token to same-origin, relative URLs only.
-                // Send the token only if the method warrants CSRF protection
-                // Using the CSRFToken value acquired earlier
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            }
-        }
-    });
-    
-    // AJAX for posting
-    function create_post() {
-        console.log("create post is working!") // sanity check
-        $.ajax({
-            url : "#", // the endpoint
-            type : "POST", // http method
-            data : { search_asset : $('#post-text').val() }, // data sent with the post request
-
-            // handle a successful response
-            success : function(json) {
-                $('#post-text').val(''); // remove the value from the input
-                console.log(json); // log the returned json to the console
-                console.log("success"); // another sanity check
-            },
-
-            // handle a non-successful response
-            error : function(xhr,errmsg,err) {
-                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-            }
-        });
-    };
-
-
+	$('#asset_data, #document_data').on('submit', function(event) {
+		event.preventDefault();
+		console.log("form submitted!") 
+		create_post();
+	});	
 </script>
+
 {% endblock %}

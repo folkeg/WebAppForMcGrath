@@ -9,6 +9,9 @@ from django.views.generic import View
 from .form import AssetForm, DocForm, UserForm, AssetSearchForm, DocSearchForm
 from .models import Asset, Document
 from aetypes import template
+from django.http import HttpResponse
+from utils import MyEncoder
+import json
 
 class IndexView(generic.ListView):
     template_name = 'Documents/index.html'
@@ -67,14 +70,15 @@ class Search(View):
     def post(self, request):
         assetform = self.assetform_class(None)
         docform = self.docform_class(None)
-        
-        if(request.POST.get('search') == 'assetSearch'):
+        result = None
+                     
+        if(request.POST.get('approval_agency')):
             result = Asset.objects.all()
             assetDict = {}
+            assetDict['approval_agency'] = request.POST.get('approval_agency')
             assetDict['asset_type'] = request.POST.get('asset_type')
             assetDict['status'] = request.POST.get('status')
             assetDict['manufacture_name'] = request.POST.get('manufacture_name')
-            assetDict['approval_agency'] = request.POST.get('approval_agency')
             assetDict['serial_number'] = request.POST.get('serial_number')
             assetDict['a_number'] = request.POST.get('a_number')
             assetDict['tag_number'] = request.POST.get('tag_number')
@@ -94,8 +98,8 @@ class Search(View):
                     result = Asset.objects.filter(a_number = value)
                 if key=='tag_number' and value:
                     result = Asset.objects.filter(tag_number = value)
-                            
-        elif(request.POST.get('search') == 'docSearch'):
+                   
+        else:
             result = Document.objects.all()
             docDict = {}
             docDict['manufacture_name'] = request.POST.get('manufacture_name')
@@ -122,14 +126,12 @@ class Search(View):
                 if key=='document_type' and value:
                     result = Document.objects.filter(document_type = value)
         
-        errorMessage = ""
-        
+
         if not result:
-            errorMessage = "No result found"
+            errorMessage = "Not found"
+            return HttpResponse(json.dumps(errorMessage), content_type="application/json")
         
-        context = {'assetform': assetform,'docform' : docform, 'result':result, 'errorMessage' : errorMessage}
-        
-        return render(request, self.template_name, context)
+        return HttpResponse(json.dumps(result, cls=MyEncoder), content_type="application/json")
           
 
 @login_required(login_url='Documents:login')
