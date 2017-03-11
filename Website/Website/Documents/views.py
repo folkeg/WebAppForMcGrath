@@ -68,9 +68,8 @@ class Search(View):
     def post(self, request):
         result = None
         
-        print request.POST.get('serial_number'), request.POST.get('a_number'), request.POST.get('tag_number'), request.POST.get('manufacture_name')
-     
-        if(request.POST.get('approval_agency')):
+        print request.POST.get('search_type')
+        if(request.POST.get('search_type') == 'asset_search'):
             result = Asset.objects.all()
             assetDict = {}
             assetDict['approval_agency'] = request.POST.get('approval_agency')

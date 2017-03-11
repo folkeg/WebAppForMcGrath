@@ -1,3 +1,26 @@
+function post(dataType) {
+	console.log("here"),
+	$.ajax({
+		url : "#", // the endpoint
+		type : "POST", // http method
+		data : (dataType == asset_data) ? $('#asset_data').serialize() : $('#document_data').serialize(),
+		// handle a successful response
+        success : function(json) {       	
+        	console.log(json);        
+            console.log("success"); // another sanity check
+            addData(json);
+        },
+
+        // handle a non-successful response
+        error : function(xhr,erråmsg,err) {
+           $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+           " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+           console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+    });
+};
+
+
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
@@ -50,27 +73,6 @@ $.ajaxSetup({
     }
 });
 
-function create_post() {
-	console.log("create post is working!") // sanity check
-	$.ajax({
-		url : "#", // the endpoint
-		type : "POST", // http method
-		data : $('#asset_data').serialize(),
-		// handle a successful response
-        success : function(json) {       	
-        	console.log(json);        
-            console.log("success"); // another sanity check
-            addData(json);
-        },
-
-        // handle a non-successful response
-        error : function(xhr,erråmsg,err) {
-           $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-           " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-           console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-        }
-    });
-};
 
 function addData(result) {
 	document.getElementById("asset_table").style.display="table";

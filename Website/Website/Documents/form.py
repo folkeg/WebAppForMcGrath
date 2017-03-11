@@ -11,6 +11,9 @@ class AssetForm(forms.ModelForm):
         fields = ['approval_agency', 'asset_type', 'manufacture_name', 'serial_number', 'a_number', 'tag_number', 'status', 'description']
         
 class DocForm(forms.ModelForm):
+    document_date = forms.DateField(widget=forms.widgets.DateInput(format="%m/%d/%Y"), required=False)
+    renewal_date = forms.DateField(widget=forms.widgets.DateInput(format="%m/%d/%Y"), required=False)
+    
     class Meta:
         model = Document
         fields = ['asset', 'document_type', 'document_date', 'renewal_date', 'manufacture_name', 'model_number', 'a_number', 'license_decal_number', 'document_description']
