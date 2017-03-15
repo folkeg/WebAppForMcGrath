@@ -1,14 +1,18 @@
 function post(dataType) {
-	console.log("here"),
+	
 	$.ajax({
 		url : "#", // the endpoint
 		type : "POST", // http method
 		data : (dataType == asset_data) ? $('#asset_data').serialize() : $('#document_data').serialize(),
 		// handle a successful response
-        success : function(json) {       	
-        	console.log(json);        
-            console.log("success"); // another sanity check
-            addData(json);
+        success : function(json) {       	 
+        	if(json == "Not found") {
+        		showNotFound();
+        	}
+        	else{
+        		sortedKey = sortData(json[0]);
+                addData(json, sortedKey);
+            }
         },
 
         // handle a non-successful response
@@ -74,19 +78,19 @@ $.ajaxSetup({
 });
 
 
-function addData(result) {
+function addData(result, sortedKey) {
 	document.getElementById("asset_table").style.display="table";
 	var newRows = " ";
-	for(var item in result) {
-		if(result.hasOwnProperty(item)){
-			var eachItem = result[item];
-			console.log(eachItem);			
-	        newRows += "<tr><td></td>"; 
-	        for(var key in eachItem){
-	        	console.log(key);
-	    	    if(eachItem.hasOwnProperty(key)) {
-	    	    	console.log(eachItem[key]);
-	    	        newRows += "<td align='center'>" + eachItem[key] + "</td>";
+	for(key in result) {
+		if(result.hasOwnProperty(key)){
+			var item = result[key];		
+	        newRows += "<tr><th>";
+	        newRows +=  '<span class="glyphicon glyphicon-pencil edit-document"></span>';
+	        newRows += "</th>";
+	        for(var i = 0; i < sortedKey.length; i++){
+	        	var attribute = sortedKey[i];
+	    	    if(item.hasOwnProperty(attribute)) {
+	    	        newRows += "<td align='center'>" + item[attribute] + "</td>";
 	    	    }
 	        }
 	        newRows += "</tr>";
@@ -94,4 +98,25 @@ function addData(result) {
 	    document.getElementById("asset_row").innerHTML = newRows;
 	}
 };
+
+function showNotFound() {
+	document.getElementById("asset_table").style.display="none";
+	document.getElementById("document_table").style.display="none";
+	var content = "<p>No result found.</p>"
+	document.getElementById("not_found").innerHTML = content;
+};
+
+function sortData(item) {
+	var keyArray = [];
+	for(key in item) {
+		if(item.hasOwnProperty(key) && key != 'asset_type_id' && key != 'approval_agency_id' && key != 'document_type_id' && key != 'search_type' &&key != 'description' && key != 'id') {
+			keyArray.push(key);
+		}
+	}
+    keyArray.sort();
+    keyArray.push('description');
+    keyArray.unshift('id');
+    console.log(keyArray);
+	return keyArray;
+}
 
