@@ -83,7 +83,7 @@
 						<th>Serial_number</th>
 						<th>Tag_number</th>
 						<th>Status</th>
-						<th><span class="glyphicon glyphicon-file" id="asset_to_csv"></span></th>
+						<th><a href="#" class="glyphicon glyphicon-file" id="asset_to_csv"></a></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -103,7 +103,7 @@
 						<th>License_decal_number</th>
 						<th>Model_number</th>
 						<th>Document_description</th>
-						<th><span class="glyphicon glyphicon-file" id="document_to_csv"></span></th>
+						<th><a href="#" class="glyphicon glyphicon-file" id="document_to_csv"></a></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -132,11 +132,10 @@
 		document.getElementById('asset_table_in_search').style.display="none";
 	});
 	$("#asset_to_csv").click(function(event) {
-		event.preventDefault();
-		postForCSV('#asset_table_in_search', 'asset_table');
+		
 	});
 	$("#document_to_csv").click(function(event) {
-		postForCSV('#document_table', 'document_table');
+		
 	});
 	
 	document.getElementById("id_document_type").onkeyup = function() {
