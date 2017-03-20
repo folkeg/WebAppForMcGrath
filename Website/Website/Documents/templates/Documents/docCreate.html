@@ -1,5 +1,4 @@
-{% extends 'Documents/base.html' %} 
-{% block body %}
+{% extends 'Documents/base.html' %} {% block body %}
 <!-- Content Section -->
 <section>
 	<div class="container">
@@ -7,15 +6,121 @@
 			<div class="col-sm-12 col-md-7">
 				<h3>Create Document</h3>
 				<hr>
-				<form class="form-horizontal" action="" method="post">
-				{% csrf_token %}
-				{% include 'Documents/form-template.html' %}
-					<div class="form-group" style="margin-left:40px"">
+				<form class="form-horizontal" action="" method="post" id="document_create_form">
+					{% csrf_token %} 
+					{% for field in docform %}
+						<div class="form-group">
+							<label class="control-label col-sm-3">{{field.label_tag}}</label>
+							<div class="col-sm-9">{{ field }}</div>
+						</div>
+					{% endfor %}
+					<div class="form-group hidden" style="margin-left: 40px"">
+						<label class="control-label col-sm-2">
+								document type id:</label>
+							<div class="col-sm-10">
+							    <input id="document_type_id" name="document_type_id">
+							</div>
+					</div>
+					<div class="form-group hidden" style="margin-left: 40px"">
+						<label class="control-label col-sm-2">
+								asset id:</label>
+							<div class="col-sm-10">
+							    <input id="asset_id" name="asset_id">
+							</div>
+					</div>
+					<div class="form-group" style="margin-left: 40px"">
 						<button type="submit" class="btn btn-success">Save</button>
 					</div>
 				</form>
 			</div>
+			<div class="col-sm-12 col-md-5">
+				<div class="row row-content">
+					<h3>Link Asset</h3>
+					<hr>
+					<form class="form-horizontal" action="" method="post" id="asset_link_form">
+						{% csrf_token %}
+						<div class="form-group">
+							<label class="control-label col-sm-4"> Serial Number: </label>
+							<div class="col-sm-8">
+								<input type="text" name="serial_number">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-4"> Tag Number: </label>
+							<div class="col-sm-8">
+								<input type="text" name="tag_number">
+							</div>
+						</div>
+						<div class="form-group hidden">
+							<label class="control-label col-sm-2">
+								asset_link_data</label>
+							<div class="col-sm-10">
+							    <input name="search_type" value="asset_link_data">
+							</div>
+						</div>
+						<div class="form-group" style="margin-left: 40px"">
+							<button type="submit" class="btn btn-primary">Search</button>
+						</div>
+					</form>
+				</div>
+				<div class="row row-content">
+				    <div id="not_found" style="display: none">
+                        <p>No result found.</p>
+                    </div>
+					<div class="form-group" style="border: 1px solid #ddd">
+						<table id="asset_table_in_document_create" class="table table-hover col-sm-12" style="display: none">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Approval_agency</th>
+									<th>Asset_type</th>
+									<th>Manufacture_name</th>
+									<th>Serial_number</th>
+									<th>Tag_number</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>								
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </section>
+
+<script>
+	document.getElementById("id_document_type").onkeyup = function() {
+		hintSearch()
+	};
+
+	var valueArray = [];
+	
+	$('#asset_table_in_document_create').multiSelect({
+				actcls : 'info', 
+				selector : 'tbody tr', 
+				except : [ 'tbody' ], 
+				statics : [ '.danger', '[data-no="1"]' ], 
+				callback : function(items) {
+					console.log("empty");
+					for(var i = 0; i < items.length; i++){
+	            		var value = $(items[i]).find('td:first').text();
+	            		if(valueArray.indexOf(value) === -1){
+	            			valueArray.push(value);
+	            		}
+	            	};
+	            	console.log(valueArray);
+	            	document.getElementById("asset_id").value = valueArray;
+				}
+			});
+	
+	$('#asset_link_form').on('submit', function(event) {
+		event.preventDefault();
+		console.log("asset_search_form submitted!");
+		post('#asset_link_form', 'asset_table_in_document_create');
+	});	
+
+	
+</script>
 {% endblock %}

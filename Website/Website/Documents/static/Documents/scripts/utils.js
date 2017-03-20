@@ -1,21 +1,37 @@
-function post(dataType) {
+
+function hintSearch(){
+	$.ajax({
+		url : "#", 
+		type : "POST", 
+		data : $('#id_document_type').serialize(),
+        success : function(json) {       	 
+        	console.log("hintsearchSuccess");
+        	addHint(json);
+        },
+        error : function(xhr,erråmsg,err) {
+           $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+           " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+           console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+    });
+};
+
+function post(form, table) {
 	
 	$.ajax({
-		url : "#", // the endpoint
-		type : "POST", // http method
-		data : (dataType == asset_data) ? $('#asset_data').serialize() : $('#document_data').serialize(),
-		// handle a successful response
+		url : "#", 
+		type : "POST", 
+		data : $(form).serialize(),
         success : function(json) {       	 
         	if(json == "Not found") {
-        		showNotFound();
+        		showNotFound(table);
         	}
         	else{
         		sortedKey = sortData(json[0]);
-                addData(json, sortedKey);
+                addData(json, sortedKey, table);
             }
         },
 
-        // handle a non-successful response
         error : function(xhr,erråmsg,err) {
            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
            " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
@@ -78,45 +94,66 @@ $.ajaxSetup({
 });
 
 
-function addData(result, sortedKey) {
-	document.getElementById("asset_table").style.display="table";
+function addData(result, sortedKey, table) {
+	var currentTable = document.getElementById(table);
+	console.log(currentTable.id);
+	currentTable.style.display="table";
+	document.getElementById("not_found").style.display="none";
 	var newRows = " ";
 	for(key in result) {
 		if(result.hasOwnProperty(key)){
 			var item = result[key];		
-	        newRows += "<tr><th>";
-	        newRows +=  '<span class="glyphicon glyphicon-pencil edit-document"></span>';
-	        newRows += "</th>";
+	        newRows += "<tr>";
+	        if(currentTable.id == "asset_table_in_search" || currentTable.id == "document_table") {
+	            newRows +=  '<th><span class="glyphicon glyphicon-pencil edit-document"></span></th>';
+	        }
 	        for(var i = 0; i < sortedKey.length; i++){
 	        	var attribute = sortedKey[i];
 	    	    if(item.hasOwnProperty(attribute)) {
-	    	        newRows += "<td align='center'>" + item[attribute] + "</td>";
+	    	            newRows += "<td align='center'>" + item[attribute] + "</td>";
 	    	    }
 	        }
 	        newRows += "</tr>";
 		}
-	    document.getElementById("asset_row").innerHTML = newRows;
+	    currentTable.tBodies[0].innerHTML = newRows;
 	}
 };
 
-function showNotFound() {
-	document.getElementById("asset_table").style.display="none";
-	document.getElementById("document_table").style.display="none";
-	var content = "<p>No result found.</p>"
-	document.getElementById("not_found").innerHTML = content;
+function showNotFound(table) {
+	document.getElementById(table).style.display="none";
+	document.getElementById("not_found").style.display="block";
 };
 
 function sortData(item) {
 	var keyArray = [];
 	for(key in item) {
-		if(item.hasOwnProperty(key) && key != 'asset_type_id' && key != 'approval_agency_id' && key != 'document_type_id' && key != 'search_type' &&key != 'description' && key != 'id') {
+		if(item.hasOwnProperty(key) && key != 'asset_type_id' && key != 'approval_agency_id' && key != 'document_type_id' && key != 'description' && key != 'id') {
 			keyArray.push(key);
 		}
 	}
-    keyArray.sort();
-    keyArray.push('description');
+	keyArray.sort();
+	if('approval_agency' in item) {
+		keyArray.push('description');
+	}
     keyArray.unshift('id');
     console.log(keyArray);
 	return keyArray;
+}
+
+function addHint(result) {
+	var document_type_attributes = [];
+	for(key in result) {
+		if(result.hasOwnProperty(key)){
+			var item = result[key];	
+			document_type_attributes.push({label : item['document_type'], real_id : item['id']});
+		}
+	}
+	console.log(document_type_attributes);
+	$('#id_document_type').autocomplete({ 
+		source : document_type_attributes,
+		select: function(e, ui) {
+			document.getElementById("document_type_id").value = ui.item.real_id;
+		},
+	});
 }
 

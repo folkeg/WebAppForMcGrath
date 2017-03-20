@@ -1,7 +1,12 @@
 from django.db import models
 from django.core.urlresolvers import reverse
-from .utils import StatusChoices 
 from datetime import datetime
+
+StatusChoices = (
+    (None, "-----"),
+    ("Valid", "Valid"),
+    ("Sold", "Sold")
+)
 
 class AssetType(models.Model):
     asset_type = models.CharField(max_length = 500)
@@ -20,10 +25,9 @@ class AssetDocument(models.Model):
     document = models.ForeignKey('Document')
     
     def __str__(self):
-        return self.asset + self.document
+        return self.asset
 
 class DocumentType(models.Model):
-    asset_type = models.ForeignKey(AssetType)
     document_type = models.CharField(max_length = 500)
     document_type_desc = models.CharField(max_length = 500, blank = True)
     
@@ -35,33 +39,30 @@ class Asset(models.Model):
     asset_type = models.ForeignKey(AssetType)
     manufacture_name = models.CharField(max_length = 500, blank = True)
     serial_number = models.CharField(max_length = 500, blank = True)
-    status = models.CharField(max_length = 500, choices = StatusChoices, blank =True)
     tag_number = models.CharField(max_length = 500, blank = True)
-    description = models.CharField(max_length = 500, blank = True)
-    
+    status = models.CharField(max_length = 500, choices = StatusChoices, blank =True)
     
     def get_absolute_url(self):
         return reverse('Documents:assetCreate')
     
     def __str__(self):
-        return self.manufacture_name + ',' +self.serial_number + ',' +self.tag_number + ',' +self.status + ',' +self.description
+        return str("serial number: " + self.serial_number + " , tag number: " + self.tag_number)
 
 class Document(models.Model):
-    asset_type = models.ForeignKey(AssetType)
+    asset = models.ManyToManyField(Asset)
     document_type = models.ForeignKey(DocumentType)
-    document_date = models.DateField(default = datetime.now)
+    document_date = models.DateField()
     renewal_date = models.DateField(blank = True, null=True)
-    manufacture_name = models.CharField(max_length = 500, blank = True)
-    model_number = models.CharField(max_length = 500, blank = True)
     a_number = models.CharField(max_length = 500, blank = True)
     license_decal_number = models.CharField(max_length = 500, blank = True)
+    model_number = models.CharField(max_length = 500, blank = True)
     document_description = models.CharField(max_length = 500, blank = True)
     
     def get_absolute_url(self):
         return reverse('Documents:docCreate')
     
     def __str__(self):
-        return self.model_number + ',' + self.manufacture_name + ',' + self.a_number + ',' + self.license_decal_number + ',' + self.document_description
+        return  str(self.id)
 
 
 

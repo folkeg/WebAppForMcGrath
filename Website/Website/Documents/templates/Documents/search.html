@@ -7,8 +7,8 @@
 			<ul class="nav nav-tabs">
 				<li class="active" id="assetTab"><a href="#asset_search"
 					data-toggle="tab"><h4>Asset Search</h4></a></li>
-				<li id="searchTab"><a href="#document_search" data-toggle="tab"><h4>Document
-							Search</h4></a></li>
+				<li id="searchTab"><a href="#document_search" data-toggle="tab">
+				<h4>Document Search</h4></a></li>
 			</ul>
 			<div class="tab-content">
 				<div>
@@ -19,6 +19,12 @@
 						{% csrf_token %} 
 						{% for field in assetform %}
 						<div class="form-group">
+						{% if field.label_tag == 'document_type' %}
+						  <div class="ui-widget">
+                             <label for="tags">{{ field.label_tag }}</label>
+                             <div class="col-sm-10">{{ field }}</div>
+                          </div>
+						{% endif %}
 							<label class="control-label col-sm-2">
 								{{field.label_tag}}</label>
 							<div class="col-sm-10">{{ field }}</div>
@@ -62,9 +68,11 @@
 				<p style="padding: 20px;"></p>
 			</div>
 		</div>
-        <div id="not_found"></div>
+        <div id="not_found" style="display: none">
+        <p>No result found.</p>
+        </div>
 		<div class="row row-content">
-			<table class="table" id="asset_table" style="display: none"><span class="glyphicon glyphicon-file"></span>
+			<table class="table" id="asset_table_in_search" style="display: none"><span class="glyphicon glyphicon-file" style="display: none"></span>
 				<thead>
 					<tr>
 					    <th>Actions</th>
@@ -73,16 +81,15 @@
 						<th>Asset_type</th>
 						<th>Manufacture_name</th>
 						<th>Serial_number</th>
-						<th>Status</th>
 						<th>Tag_number</th>
-						<th>Description</th>
+						<th>Status</th>
 					</tr>
 				</thead>
-				<tbody id="asset_row">
+				<tbody>
 
 				</tbody>
 			</table>
-			<table class="table" id="document_table" style="display: none">
+			<table class="table" id="document_table" style="display: none"><span class="glyphicon glyphicon-file" style="display: none"></span>
 				<thead>
 					<tr>
 					    <th>Actions</th>
@@ -90,10 +97,10 @@
 						<th>Document_type</th>
 						<th>Document_date</th>
 						<th>Renewal_date</th>
-						<th>Model_number</th>
 						<th>Manufacture_name</th>
 						<th>A_number</th>
 						<th>License_decal_number</th>
+						<th>Model_number</th>
 						<th>Document_description</th>
 					</tr>
 				</thead>
@@ -108,14 +115,17 @@
 <script>
 	$('#asset_data').on('submit', function(event) {
 		event.preventDefault();
-		console.log("form submitted!");
-		post(asset_data);
+		console.log("assetform submitted!");
+		post('#asset_data', 'asset_table_in_search');
 	});	
 	$('#document_data').on('submit', function(event) {
 		event.preventDefault();
-		console.log("form submitted!");
-		post(document_data);
+		console.log("docform submitted!");
+		post('#document_data', 'document_table');
 	});
+	
+	document.getElementById("id_document_type").onkeyup = function() {hintSearch()};
+
 </script>
 
 {% endblock %}

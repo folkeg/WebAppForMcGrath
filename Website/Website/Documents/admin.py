@@ -8,4 +8,3 @@ admin.site.register(ApprovalAgency)
 admin.site.register(DocumentType)
 admin.site.register(AssetDocument)
 
-

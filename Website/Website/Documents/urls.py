@@ -4,8 +4,6 @@ from . import views
 app_name = 'Documents'
 
 urlpatterns = [
-    # Documents/
-    url(r'^$', views.IndexView.as_view(), name='index'),
     # Documents/asset_id/
     url(r'^(?P<pk>[0-9]+)/$', views.AssetDetailView.as_view(), name='assetDetail'),
     # Documents/main/assetCreate

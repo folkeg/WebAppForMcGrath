@@ -1,22 +1,16 @@
 from django.views import generic
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView, UpdateView
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import View
-from .form import AssetForm, DocForm, UserForm, AssetSearchForm, DocSearchForm
+from .form import AssetCreateForm, DocCreateForm, UserForm, AssetSearchForm, DocSearchForm, AssetLinkForm
 from .models import Asset, Document, ApprovalAgency, AssetType, DocumentType, AssetDocument
 from aetypes import template
 from django.http import HttpResponse
 import json, csv
-
-class IndexView(generic.ListView):
-    template_name = 'Documents/index.html'
-    context_object_name = 'all_assets'
-    
-    def get_queryset(self):
-        return Asset.objects.all()
+from .utils import SearchQuery, CSVCreate
 
 class AssetDetailView(generic.DetailView):
     model = Asset
@@ -46,13 +40,56 @@ class UserFormView(View):
 
 @method_decorator(login_required, name='dispatch')
 class AssetCreate(CreateView):
-    form_class = AssetForm
+    form_class = AssetCreateForm
     template_name = 'Documents/assetCreate.html'
-    
+       
 @method_decorator(login_required, name='dispatch')
-class DocCreate(CreateView):
-    form_class = DocForm
+class DocCreate(View):
+    docform_class = DocCreateForm
     template_name = 'Documents/docCreate.html'
+    
+    def get(self, request):
+        docform = self.docform_class(None)
+        return render(request, self.template_name, {'docform' : docform})
+    
+    def byte_string(self, x):
+        return str(x) if isinstance(x, unicode) else x
+    
+    def post(self, request):
+        docform = self.docform_class(None)
+        
+        if(request.POST.get("asset_id")): 
+            print "CreateDoc"   
+            documentObject = Document(document_type_id = request.POST.get("document_type_id"),
+                                     document_date = request.POST.get("document_date"), 
+                                     renewal_date = request.POST.get("renewal_date") or None,
+                                     a_number = request.POST.get("a_number"),
+                                     license_decal_number = request.POST.get("license_decal_number"),
+                                     model_number = request.POST.get("model_number"),
+                                     document_description = request.POST.get("document_description"))
+
+            documentObject.save()
+            
+            assetIdArray = request.POST.get("asset_id").split(",")
+                        
+            for assetId in assetIdArray:
+                asset_id = self.byte_string(assetId)
+                print asset_id
+                currentAsset = Asset.objects.get(pk=asset_id)
+                documentObject.asset.add(currentAsset)
+            
+            documentObject.save()           
+            return render(request, self.template_name, {'docform': docform})
+        
+        elif(request.POST.get("document_type")):
+            print request.POST.get("document_type")
+            return SearchQuery().searchByDocumentType(request)
+            
+        elif(self.request.POST.get("search_type")):
+            print request.POST.get("search_type")
+            attributeList = ['serial_number', 'tag_number']
+            return SearchQuery().searchContent(request, attributeList, 'asset_search')
+     
 
 @method_decorator(login_required, name='dispatch')
 class Search(View):
@@ -60,106 +97,25 @@ class Search(View):
     docform_class = DocSearchForm
     template_name = 'Documents/search.html'
         
-    def makeDict(self,item, search_type):
-        itemDict = dict(item)
-        if(search_type == "asset_search"):
-            itemDict['asset_type'] = AssetType.objects.get(id=itemDict['asset_type_id']).asset_type
-            itemDict['approval_agency'] = ApprovalAgency.objects.get(id=itemDict['approval_agency_id']).approval_agency 
-            itemDict['search_type'] = 'asset_search'
-        else:
-            itemDict['asset_type'] = AssetType.objects.get(id=itemDict['asset_type_id']).asset_type
-            itemDict['document_type'] = DocumentType.objects.get(id=item['document_type_id']).document_type
-            itemDict['document_type_desc'] = DocumentType.objects.get(id=item['document_type_id']).document_type_desc  
-            itemDict['search_type'] = 'document_search'            
-        return itemDict
-        
     def get(self, request):
         assetform = self.assetform_class(None)
         docform = self.docform_class(None)
         return render(request, self.template_name, {'assetform': assetform, 'docform' : docform})
-     
-    
+         
     def post(self, request):  
         if(request.POST.get('search_type')):      
             if(request.POST.get('search_type') == 'asset_search'):
-                result = Asset.objects.all()
-                assetDict = {}
-                assetDict['approval_agency_id'] = request.POST.get('approval_agency')
-                assetDict['asset_type_id'] = request.POST.get('asset_type')
-                assetDict['status'] = request.POST.get('status')
-                assetDict['manufacture_name'] = request.POST.get('manufacture_name')
-                assetDict['serial_number'] = request.POST.get('serial_number')
-                assetDict['a_number'] = request.POST.get('a_number')
-                assetDict['tag_number'] = request.POST.get('tag_number')
-                assetDict['description'] = request.POST.get('description')
-            
-                for key, value in assetDict.items():
-                    if key == 'asset_type_id' and value:
-                        result = Asset.objects.filter(asset_type_id=value)
-                    if key == 'status' and value:
-                        result = Asset.objects.filter(status=value)
-                    if key == 'manufacture_name' and value:
-                        result = Asset.objects.filter(manufacture_name=value)
-                    if key == 'approval_agency_id' and value:
-                        result = Asset.objects.filter(approval_agency_id=value)
-                    if key == 'serial_number' and value:
-                        result = Asset.objects.filter(serial_number=value)
-                    if key == 'a_number' and value:
-                        document_id = Document.objects.filter(a_number=value)
-                        asset_id = AssetDocument.objects.filter(id = document_id)
-                        result = Asset.objects.filter(id = asset_id)
-                    if key == 'tag_number' and value:
-                        result = Asset.objects.filter(tag_number=value)
-                    if key == 'description' and value:
-                        result = Asset.objects.filter(description=value)
-                
-                if(result == None):
-                    return HttpResponse(json.dumps("Not found"), content_type="application/json")
-                
-                return HttpResponse(json.dumps([self.makeDict(item, 'asset_search') for item in result.values()]), content_type="application/json")
-                                            
+                attributeList = ['approval_agency', 'asset_type', 'manufacture_name', 'serial_number', 'tag_number', 'status']
+                return SearchQuery().searchContent(request, attributeList, 'assetSearch')
             else:
-                result = Document.objects.all()
-                docDict = {}
-                docDict['manufacture_name'] = request.POST.get('manufacture_name')
-                docDict['document_date'] = request.POST.get('document_date')
-                docDict['renewal_date'] = request.POST.get('renewal_date')
-                docDict['modal_number'] = request.POST.get('modal_number')
-                docDict['license_decal_number'] = request.POST.get('license_decal_number')
-                docDict['a_number'] = request.POST.get('a_number')
-                docDict['document_type_id'] = request.POST.get('document_type')
-            
-                for key, value in docDict.items():
-                    if key == 'manufacture_name' and value:
-                        result = Document.objects.filter(manufacture_name=value)
-                    if key == 'document_date' and value:
-                        result = Document.objects.filter(document_date=value)
-                    if key == 'renewal_date' and value:
-                        result = Document.objects.filter(renewal_date=value)
-                    if key == 'modal_number' and value:
-                        result = Document.objects.filter(modal_number=value)
-                    if key == 'license_decal_number' and value:
-                        result = Document.objects.filter(license_decal_number=value)
-                    if key == 'a_number' and value:
-                        result = Document.objects.filter(a_number=value)
-                    if key == 'document_type_id' and value:
-                        result = Document.objects.filter(document_type_id=value)
-                
-                if(result == None):
-                    return HttpResponse(json.dumps("Not found"), content_type="application/json")
-                
-                return HttpResponse(json.dumps([self.makeDict(item, 'document_search') for item in result.values()]), content_type="application/json")
-        
+                attributeList = ['document_type', 'document_date', 'renewal_date', 'a_number', 'license_decal_number', 'model_number', 'description']
+                return SearchQuery().searchContent(request, attributeList, 'documentSearch')
+        #to be revised
         elif(request.POST.get("export_csv")):
-            response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename="assetDetail.csv"'
-            writer = csv.writer(response)
-            writer.writerow(['Username', 'First name', 'Last name', 'Email address'])
-            users = Asset.objects.all().values_list('username', 'first_name', 'last_name', 'email')
-            for user in users:
-                writer.writerow(user)
-
-            return response
+            return CSVCreate().csvCreate(request)
+        
+        elif(request.POST.get("document_type")):
+            return SearchQuery().searchByDocumentType(request)
         
         else:
             return HttpResponse(json.dumps("Error"), content_type="application/json")
