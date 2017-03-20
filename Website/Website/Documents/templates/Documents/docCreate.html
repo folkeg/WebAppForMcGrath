@@ -92,10 +92,9 @@
 
 <script>
 	document.getElementById("id_document_type").onkeyup = function() {
-		hintSearch()
+		postForHintSearch()
 	};
 
-	var valueArray = [];
 	
 	$('#asset_table_in_document_create').multiSelect({
 				actcls : 'info', 
@@ -103,14 +102,13 @@
 				except : [ 'tbody' ], 
 				statics : [ '.danger', '[data-no="1"]' ], 
 				callback : function(items) {
-					console.log("empty");
+					var valueArray = [];
 					for(var i = 0; i < items.length; i++){
 	            		var value = $(items[i]).find('td:first').text();
 	            		if(valueArray.indexOf(value) === -1){
 	            			valueArray.push(value);
 	            		}
 	            	};
-	            	console.log(valueArray);
 	            	document.getElementById("asset_id").value = valueArray;
 				}
 			});
@@ -118,7 +116,7 @@
 	$('#asset_link_form').on('submit', function(event) {
 		event.preventDefault();
 		console.log("asset_search_form submitted!");
-		post('#asset_link_form', 'asset_table_in_document_create');
+		postForSearch('#asset_link_form', 'asset_table_in_document_create');
 	});	
 
 	

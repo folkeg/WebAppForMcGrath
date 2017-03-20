@@ -1,5 +1,5 @@
 
-function hintSearch(){
+function postForHintSearch(){
 	$.ajax({
 		url : "#", 
 		type : "POST", 
@@ -16,7 +16,7 @@ function hintSearch(){
     });
 };
 
-function post(form, table) {
+function postForSearch(form, table) {
 	
 	$.ajax({
 		url : "#", 

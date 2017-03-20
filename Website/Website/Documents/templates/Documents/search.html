@@ -5,9 +5,9 @@
 	<div class="container">
 		<div class="row row-content">
 			<ul class="nav nav-tabs">
-				<li class="active" id="assetTab"><a href="#asset_search"
+				<li class="active" id="asset_search_tab"><a href="#asset_search"
 					data-toggle="tab"><h4>Asset Search</h4></a></li>
-				<li id="searchTab"><a href="#document_search" data-toggle="tab">
+				<li id="document_search_tab"><a href="#document_search" data-toggle="tab">
 				<h4>Document Search</h4></a></li>
 			</ul>
 			<div class="tab-content">
@@ -72,7 +72,7 @@
         <p>No result found.</p>
         </div>
 		<div class="row row-content">
-			<table class="table" id="asset_table_in_search" style="display: none"><span class="glyphicon glyphicon-file" style="display: none"></span>
+			<table class="table" id="asset_table_in_search" style="display: none">
 				<thead>
 					<tr>
 					    <th>Actions</th>
@@ -83,13 +83,14 @@
 						<th>Serial_number</th>
 						<th>Tag_number</th>
 						<th>Status</th>
+						<th><span class="glyphicon glyphicon-file" id="asset_to_csv"></span></th>
 					</tr>
 				</thead>
 				<tbody>
 
 				</tbody>
 			</table>
-			<table class="table" id="document_table" style="display: none"><span class="glyphicon glyphicon-file" style="display: none"></span>
+			<table class="table" id="document_table" style="display: none">
 				<thead>
 					<tr>
 					    <th>Actions</th>
@@ -102,6 +103,7 @@
 						<th>License_decal_number</th>
 						<th>Model_number</th>
 						<th>Document_description</th>
+						<th><span class="glyphicon glyphicon-file" id="document_to_csv"></span></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -116,15 +118,30 @@
 	$('#asset_data').on('submit', function(event) {
 		event.preventDefault();
 		console.log("assetform submitted!");
-		post('#asset_data', 'asset_table_in_search');
+		postForSearch('#asset_data', 'asset_table_in_search');
 	});	
 	$('#document_data').on('submit', function(event) {
 		event.preventDefault();
 		console.log("docform submitted!");
-		post('#document_data', 'document_table');
+		postForSearch('#document_data', 'document_table');
+	});
+	$("#asset_search_tab").click(function(event) {
+		document.getElementById('document_table').style.display="none";
+	});
+	$("#document_search_tab").click(function(event) {
+		document.getElementById('asset_table_in_search').style.display="none";
+	});
+	$("#asset_to_csv").click(function(event) {
+		event.preventDefault();
+		postForCSV('#asset_table_in_search', 'asset_table');
+	});
+	$("#document_to_csv").click(function(event) {
+		postForCSV('#document_table', 'document_table');
 	});
 	
-	document.getElementById("id_document_type").onkeyup = function() {hintSearch()};
+	document.getElementById("id_document_type").onkeyup = function() {
+		postForHintSearch()
+	};
 
 </script>
 

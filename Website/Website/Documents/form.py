@@ -1,7 +1,6 @@
 from django import forms
 from .models import Asset, Document, AssetType, ApprovalAgency, DocumentType, StatusChoices
 from django.contrib.auth.models import User
-from django.forms.extras import SelectDateWidget 
 
 class AssetCreateForm(forms.ModelForm): 
     

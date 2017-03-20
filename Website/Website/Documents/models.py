@@ -20,6 +20,7 @@ class ApprovalAgency(models.Model):
     def __str__(self):
         return self.approval_agency
 
+#not using this model any more
 class AssetDocument(models.Model):
     asset = models.ForeignKey('Asset')
     document = models.ForeignKey('Document')

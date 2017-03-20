@@ -109,3 +109,7 @@ button {
 .table, th, td{
 	align: center;
 }
+
+.glyphicon.glyphicon-file {
+    font-size: 25px;
+}
