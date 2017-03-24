@@ -23,6 +23,16 @@ class AssetEditView(UpdateView):
     def get_success_url(self):
         return reverse_lazy('Documents:search')
 
+@method_decorator(login_required, name='dispatch')
+class DocumentEditView(UpdateView):
+
+    model = Document
+    fields = ['document_date', 'renewal_date', 'a_number', 'license_decal_number', 'model_number', 'document_description']
+    template_name = 'Documents/documentEdit.html'
+    
+    def get_success_url(self):
+        return reverse_lazy('Documents:search')
+
 class UserFormView(View):
     
     form_class = UserForm
@@ -148,9 +158,6 @@ def docDetail(request):
     return render(request, 'Documents/docDetail.html')
 
 @method_decorator(login_required, name='dispatch')
-def docEdit(request): 
-          
-    return render(request, 'Documents/docEdit.html')
     
 def logoutuser(request):
     

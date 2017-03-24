@@ -132,7 +132,10 @@ function addData(result, attribute_array, data_table_parent, id_dict) {
 		if (result.hasOwnProperty(key)) {
 			var item = result[key];
 			newRows += "<tr>";
-			if (data_table_parent != "asset_table_in_document_parent") {
+			if (data_table_parent == "asset_table_parent") {
+				newRows += '<th><span class="glyphicon glyphicon-pencil edit-asset"></span></th>';
+			}
+			else if (data_table_parent == "document_table_parent") {
 				newRows += '<th><span class="glyphicon glyphicon-pencil edit-document"></span></th>';
 			}
 			for (var i = 0; i < attribute_array.length; i++) {

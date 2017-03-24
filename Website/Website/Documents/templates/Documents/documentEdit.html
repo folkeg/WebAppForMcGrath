@@ -1,6 +1,6 @@
 {% extends 'Documents/base.html' %} 
 
-{% block link %}href="{% url 'Documents:main' %}"{% endblock %}
+{% block link %} ref="{% url 'Documents:main' %}"{% endblock %}
 {% block body %}
 
 <section>
@@ -14,7 +14,7 @@
 					<a href=" {% url 'Documents:search' %}">Search</a>
 				</li>
 				<li	class="breadcrumb-item active">
-					<a href=" {% url 'Documents:documentEdit' %}">Document Edit</a>
+					Document Edit
 				</li>
 			</ol>
 		</div>

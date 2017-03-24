@@ -8,7 +8,7 @@
 					<a href=" {% url 'Documents:main' %}">Main Page</a>
 				</li>
 				<li	class="breadcrumb-item active">
-					<a href=" {% url 'Documents:search' %}">Search</a>
+					Search
 				</li>
 			</ol>
 		</div>
@@ -190,10 +190,18 @@
 	
 	$(document).on(
 			'click',
-			'.edit-document',
+			'.edit-asset',
 			function(event) {
 				var asset_id = $(event.target).closest('tr').children('td:first').text();
 				window.location.href = "assetEdit/" + asset_id;
+	        });
+	
+	$(document).on(
+			'click',
+			'.edit-document',
+			function(event) {
+				var document_id = $(event.target).closest('tr').children('td:first').text();
+				window.location.href = "documentEdit/" + document_id;
 	        });
 
 	document.getElementById('id_document_type').onkeyup = function() {

@@ -113,3 +113,14 @@ button {
 .glyphicon.glyphicon-file {
     font-size: 25px;
 }
+
+#asset_table_parent, #document_table_parent {
+	height: 300px;
+	overflow-y: auto;
+}
+
+#asset_table_in_document_parent {
+	height: 300px;
+	width: 1000px;
+	overflow-y: auto;
+}
