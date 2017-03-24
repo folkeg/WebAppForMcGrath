@@ -8,10 +8,16 @@ class SearchQuery():
         document_type_request = request.POST.get("document_type")
         result = DocumentType.objects.filter(document_type__istartswith=document_type_request)
         return HttpResponse(json.dumps([ItemConverter().convertToDict(item, 'document_type') for item in result.values()]), content_type="application/json")
+    
+    def searchByAssetId(self, request):
+        asset_id = request.GET.get("asset_id")
+        asset_data = Asset.objects.filter(pk = asset_id)
+        result = Document.objects.filter(asset = asset_data)
+        return HttpResponse(json.dumps([ItemConverter().convertToDict(item, 'document_search') for item in result.values()]), content_type="application/json")
        
     def searchContent(self, request, attributeList, searchType):
         contentDict = {}
-        print searchType;
+        
         for field in attributeList:
             if request.POST.get(field):
                 contentDict[field] = request.POST.get(field)

@@ -11,11 +11,17 @@ from aetypes import template
 from django.http import HttpResponse
 import json, csv
 from .utils import SearchQuery, CSVCreate, ObjectCreate
+from django.core.urlresolvers import reverse_lazy
 
-class AssetDetailView(generic.DetailView):
-    
+@method_decorator(login_required, name='dispatch')
+class AssetEditView(UpdateView):
+
     model = Asset
-    template_name = 'Documents/assetDetail.html'
+    fields = ['approval_agency', 'asset_type', 'manufacture_name', 'serial_number', 'tag_number', 'status']
+    template_name = 'Documents/assetEdit.html'
+    
+    def get_success_url(self):
+        return reverse_lazy('Documents:search')
 
 class UserFormView(View):
     
@@ -94,14 +100,18 @@ class Search(View):
     template_name = 'Documents/search.html'
         
     def get(self, request):
-        
-        assetform = self.assetform_class(None)
-        docform = self.docform_class(None)
-        
-        return render(request, self.template_name, {'assetform': assetform, 'docform' : docform})
+        if request.GET.get('asset_id'):
+            
+            return SearchQuery().searchByAssetId(request)
+            
+        else:
+            assetform = self.assetform_class(None)
+            docform = self.docform_class(None)
+            
+            return render(request, self.template_name, {'assetform': assetform, 'docform' : docform})
          
     def post(self, request):  
-        
+        print request
         if(request.POST.get('search_type')):      
             if(request.POST.get('search_type') == 'asset_search'):
                 
@@ -110,7 +120,7 @@ class Search(View):
                 return SearchQuery().searchContent(request, attributeList, 'asset_search')
             else:
                 
-                attributeList = ['document_type', 'document_date', 'renewal_date', 'a_number', 'license_decal_number', 'model_number', 'description']
+                attributeList = ['document_type_id', 'document_date', 'renewal_date', 'a_number', 'license_decal_number', 'model_number', 'description']
                 
                 return SearchQuery().searchContent(request, attributeList, 'document_search')
         #to be revised
@@ -133,11 +143,6 @@ def main(request):
     return render(request, 'Documents/mainPage.html')
 
 @method_decorator(login_required, name='dispatch')
-def assetEdit(request):  
-         
-    return render(request, 'Documents/assetEdit.html')
-
-@method_decorator(login_required, name='dispatch')
 def docDetail(request):    
        
     return render(request, 'Documents/docDetail.html')
@@ -146,7 +151,7 @@ def docDetail(request):
 def docEdit(request): 
           
     return render(request, 'Documents/docEdit.html')
-
+    
 def logoutuser(request):
     
     logout(request)

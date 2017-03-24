@@ -2,7 +2,17 @@
 <!-- Content Section -->
 <section>
 	<div class="container">
-		<div class="row">
+	    <div class="row row-content">
+			<ol class="breadcrumb">
+				<li	class="breadcrumb-item">
+					<a href=" {% url 'Documents:main' %}">Main Page</a>
+				</li>
+				<li	class="breadcrumb-item active">
+					<a href=" {% url 'Documents:docCreate' %}">Document Create</a>
+				</li>
+			</ol>
+		</div>
+		<div class="row row-content">
 			<div class="col-sm-12 col-md-7">
 				<h3>Create Document</h3>
 				<hr>
@@ -58,6 +68,7 @@
 							    <input name="search_type" value="asset_link_data">
 							</div>
 						</div>
+						<br/>
 						<div class="form-group" style="margin-left: 40px"">
 							<button type="submit" class="btn btn-primary">Search</button>
 						</div>
@@ -68,7 +79,8 @@
                         <p>No result found.</p>
                     </div>
 					<div class="form-group" style="border: 1px solid #ddd">
-						<table id="asset_table_in_document_create" class="table table-hover col-sm-12" style="display: none">
+					<div id="asset_table_in_document_parent" style="display: none">
+						<table class="table table-hover col-sm-12">
 							<thead>
 								<tr>
 									<th>#</th>
@@ -83,6 +95,7 @@
 							<tbody>								
 							</tbody>
 						</table>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -92,31 +105,35 @@
 
 <script>
 	document.getElementById("id_document_type").onkeyup = function() {
-		postForHintSearch()
+		postForAutoCompleteSearch()
 	};
-
 	
-	$('#asset_table_in_document_create').multiSelect({
-				actcls : 'info', 
-				selector : 'tbody tr', 
-				except : [ 'tbody' ], 
-				statics : [ '.danger', '[data-no="1"]' ], 
-				callback : function(items) {
-					var valueArray = [];
-					for(var i = 0; i < items.length; i++){
-	            		var value = $(items[i]).find('td:first').text();
-	            		if(valueArray.indexOf(value) === -1){
-	            			valueArray.push(value);
-	            		}
-	            	};
-	            	document.getElementById("asset_id").value = valueArray;
-				}
-			});
+	$(function() {
+        $('#id_document_date, #id_renewal_date').datepicker({
+        	dateFormat: "yy-mm-dd"
+        });
+    });
+	
+	$('#asset_table_in_document_parent > table').multiSelect({
+		actcls : 'info', 
+		selector : 'tbody tr', 
+		except : [ 'tbody' ], 
+		statics : [ '.danger', '[data-no="1"]' ], 
+		callback : function(items) {
+			var valueArray = [];
+			for(var i = 0; i < items.length; i++){
+           		var value = $(items[i]).find('td:first').text();
+           		if(valueArray.indexOf(value) === -1){
+           			valueArray.push(value);
+           		}
+           	};
+           	document.getElementById("asset_id").value = valueArray;
+		}
+	});
 	
 	$('#asset_link_form').on('submit', function(event) {
 		event.preventDefault();
-		console.log("asset_search_form submitted!");
-		postForSearch('#asset_link_form', 'asset_table_in_document_create');
+		postForSearch('#asset_link_form', 'asset_table_in_document_parent');
 	});	
 
 	

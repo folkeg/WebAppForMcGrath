@@ -1,8 +1,8 @@
 {% extends 'Documents/base.html' %} 
 
+{% block link %} ref="{% url 'Documents:main' %}"{% endblock %}
 {% block body %}
 
-<!-- Content Section -->
 <section>
 	<div class="container">
 	    <div class="row row-content">
@@ -10,24 +10,28 @@
 				<li	class="breadcrumb-item">
 					<a href=" {% url 'Documents:main' %}">Main Page</a>
 				</li>
+				<li	class="breadcrumb-item">
+					<a href=" {% url 'Documents:search' %}">Search</a>
+				</li>
 				<li	class="breadcrumb-item active">
-					<a href=" {% url 'Documents:assetCreate' %}">Asset Create</a>
+					<a href=" {% url 'Documents:search' %}">Asset Edit</a>
 				</li>
 			</ol>
 		</div>
 		<div class="row">
 			<div class="col-sm-12 col-md-7">
-				<h3>Create Asset</h3>
+				<h3>Asset Detail</h3>
 				<hr>
 				<form class="form-horizontal" action="" method="post">
 				{% csrf_token %}
-				{% include 'Documents/form-template.html' %}					
-					<div class="form-group" style="margin-left:40px"">
-						<button type="submit" class="btn btn-success">Save</button>
-					</div>
+				{% include 'Documents/form-template.html' %}	
+					<div class="form-group" style="margin-left: 40px"">
+						<button type="submit" class="btn btn-primary">Update</button>
+					</div>				
 				</form>
 			</div>
 		</div>
 	</div>
 </section>
+
 {% endblock %}

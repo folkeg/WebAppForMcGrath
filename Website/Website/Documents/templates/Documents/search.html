@@ -1,40 +1,49 @@
-{% extends 'Documents/base.html' %} 
-{% block body %}
+{% extends 'Documents/base.html' %} {% block body %}
 <!-- Content Section -->
 <section>
 	<div class="container">
+	    <div class="row row-content">
+			<ol class="breadcrumb">
+				<li	class="breadcrumb-item">
+					<a href=" {% url 'Documents:main' %}">Main Page</a>
+				</li>
+				<li	class="breadcrumb-item active">
+					<a href=" {% url 'Documents:search' %}">Search</a>
+				</li>
+			</ol>
+		</div>
 		<div class="row row-content">
 			<ul class="nav nav-tabs">
-				<li class="active" id="asset_search_tab"><a href="#asset_search"
-					data-toggle="tab"><h4>Asset Search</h4></a></li>
-				<li id="document_search_tab"><a href="#document_search" data-toggle="tab">
-				<h4>Document Search</h4></a></li>
+				<li class="active" id="asset_search_tab"><a
+					href="#asset_search" data-toggle="tab"><h4>Asset Search</h4></a></li>
+				<li id="document_search_tab"><a href="#document_search"
+					data-toggle="tab">
+						<h4>Document Search</h4>
+				</a></li>
 			</ul>
 			<div class="tab-content">
 				<div>
 					<p style="padding: 20px;"></p>
 				</div>
 				<div class="tab-pane fade in active" id="asset_search">
-					<form class="form-horizontal" action="" method="post" id="asset_data">
-						{% csrf_token %} 
-						{% for field in assetform %}
+					<form class="form-horizontal" action="" method="post"
+						id="asset_data">
+						{% csrf_token %} {% for field in assetform %}
 						<div class="form-group">
-						{% if field.label_tag == 'document_type' %}
-						  <div class="ui-widget">
-                             <label for="tags">{{ field.label_tag }}</label>
-                             <div class="col-sm-10">{{ field }}</div>
-                          </div>
-						{% endif %}
-							<label class="control-label col-sm-2">
+							{% if field.label_tag == 'document_type' %}
+							<div class="ui-widget">
+								<label for="tags">{{ field.label_tag }}</label>
+								<div class="col-sm-10">{{ field }}</div>
+							</div>
+							{% endif %} <label class="control-label col-sm-2">
 								{{field.label_tag}}</label>
 							<div class="col-sm-10">{{ field }}</div>
 						</div>
 						{% endfor %}
 						<div class="form-group hidden">
-							<label class="control-label col-sm-2">
-								asset_search</label>
+							<label class="control-label col-sm-2"> asset_search</label>
 							<div class="col-sm-10">
-							    <input name="search_type" value="asset_search">
+								<input name="search_type" value="asset_search">
 							</div>
 						</div>
 						<div class="form-group" style="margin-left: 40px"">
@@ -43,19 +52,24 @@
 					</form>
 				</div>
 				<div class="tab-pane fade" id="document_search">
-					<form class="form-horizontal" action="" method="post" id="document_data">
-						{% csrf_token %} 
-						{% for field in docform %}
+					<form class="form-horizontal" action="" method="post"
+						id="document_data">
+						{% csrf_token %} {% for field in docform %}
 						<div class="form-group">
 							<label class="control-label col-sm-2">{{field.label_tag}}</label>
 							<div class="col-sm-10">{{ field }}</div>
 						</div>
 						{% endfor %}
-						<div class="form-group hidden">
-							<label class="control-label col-sm-2">
-								document_search</label>
+						<div class="form-group hidden" style="margin-left: 40px"">
+						    <label class="control-label col-sm-2"> document type id:</label>
 							<div class="col-sm-10">
-							    <input name="search_type" value="document_search">
+							    <input id="document_type_id" name="document_type_id">
+							</div>
+					    </div>
+						<div class="form-group hidden">
+							<label class="control-label col-sm-2"> document_search</label>
+							<div class="col-sm-10">
+								<input name="search_type" value="document_search">
 							</div>
 						</div>
 						<div class="form-group" style="margin-left: 40px"">
@@ -68,80 +82,123 @@
 				<p style="padding: 20px;"></p>
 			</div>
 		</div>
-        <div id="not_found" style="display: none">
-        <p>No result found.</p>
-        </div>
+		<div id="not_found" style="display: none">
+			<p>No result found.</p>
+		</div>
 		<div class="row row-content">
-			<table class="table" id="asset_table_in_search" style="display: none">
-				<thead>
-					<tr>
-					    <th>Actions</th>
-						<th>#</th>
-						<th>Approval_agency</th>
-						<th>Asset_type</th>
-						<th>Manufacture_name</th>
-						<th>Serial_number</th>
-						<th>Tag_number</th>
-						<th>Status</th>
-						<th><a href="#" class="glyphicon glyphicon-file" id="asset_to_csv"></a></th>
-					</tr>
-				</thead>
-				<tbody>
+			<div id="asset_table_parent" style="display: none">
+					<div>
+						<a href="#" class="glyphicon glyphicon-file" id="asset_to_csv"></a>
+					</div>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Actions</th>
+								<th>#</th>
+								<th>Approval_agency</th>
+								<th>Asset_type</th>
+								<th>Manufacture_name</th>
+								<th>Serial_number</th>
+								<th>Tag_number</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
 
-				</tbody>
-			</table>
-			<table class="table" id="document_table" style="display: none">
-				<thead>
-					<tr>
-					    <th>Actions</th>
-						<th>#</th>
-						<th>Document_type</th>
-						<th>Document_date</th>
-						<th>Renewal_date</th>
-						<th>Manufacture_name</th>
-						<th>A_number</th>
-						<th>License_decal_number</th>
-						<th>Model_number</th>
-						<th>Document_description</th>
-						<th><a href="#" class="glyphicon glyphicon-file" id="document_to_csv"></a></th>
-					</tr>
-				</thead>
-				<tbody>
-				</tbody>
-			</table>
-		</div> 
+						</tbody>
+					</table>
+			</div>
+			<div id="document_table_parent" style="display: none">
+				<div>
+					<a href="#" class="glyphicon glyphicon-file" id="document_to_csv"></a>
+				</div>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Actions</th>
+							<th>#</th>
+							<th>Document_type</th>
+							<th>Document_date</th>
+							<th>Renewal_date</th>
+							<th>A_number</th>
+							<th>License_decal_number</th>
+							<th>Model_number</th>
+							<th>Document_description</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 </section>
 
- 
+
 <script>
+    $(function() {
+        $('#id_document_date, #id_renewal_date').datepicker({
+        	dateFormat: "yy-mm-dd"
+        });
+    });
 	$('#asset_data').on('submit', function(event) {
+		console.log("asset_data");
 		event.preventDefault();
-		console.log("assetform submitted!");
-		postForSearch('#asset_data', 'asset_table_in_search');
-	});	
+		postForSearch('#asset_data', 'asset_table_parent');
+	});
 	$('#document_data').on('submit', function(event) {
 		event.preventDefault();
-		console.log("docform submitted!");
-		postForSearch('#document_data', 'document_table');
+		postForSearch('#document_data', 'document_table_parent');
 	});
-	$("#asset_search_tab").click(function(event) {
-		document.getElementById('document_table').style.display="none";
-	});
-	$("#document_search_tab").click(function(event) {
-		document.getElementById('asset_table_in_search').style.display="none";
-	});
-	$("#asset_to_csv").click(function(event) {
-		
-	});
-	$("#document_to_csv").click(function(event) {
-		
-	});
+	$('#asset_search_tab')
+			.click(
+					function(event) {
+						document.getElementById('document_table_parent').style.display = "none";
+					});
+	$('#document_search_tab')
+			.click(
+					function(event) {
+						document.getElementById('asset_table_parent').style.display = "none";
+					});
+	$(document).on(
+			'click',
+			'td',
+			function(event) {
+				if(event.target.parentElement.hasAttribute('data-toggle')) {
+					event.preventDefault();
+					return;
+				}
+				event.preventDefault();
+				var data_table_parent = event.target.parentElement;
+				asset_id_dict = {asset_id : $(event.target).text()};
+				getForDocument(asset_id_dict, data_table_parent);
+	        });
+	$('#asset_to_csv').click(
+			function(event) {
+				var outputFile = 'export';
+				outputFile = outputFile.replace('.csv', '') + '.csv';
+				exportTableToCSV.apply(this, [
+						$('#asset_table_parent > table'), outputFile ]);
+			});
+	$('#document_to_csv').click(
+			function(event) {
+				var outputFile = 'export';
+				outputFile = outputFile.replace('.csv', '') + '.csv';
+				exportTableToCSV.apply(this, [
+						$('#document_table_parent > table'), outputFile ]);
+			});
 	
-	document.getElementById("id_document_type").onkeyup = function() {
-		postForHintSearch()
-	};
+	$(document).on(
+			'click',
+			'.edit-document',
+			function(event) {
+				var asset_id = $(event.target).closest('tr').children('td:first').text();
+				window.location.href = "assetEdit/" + asset_id;
+	        });
 
+	document.getElementById('id_document_type').onkeyup = function() {
+		postForAutoCompleteSearch()
+	};
 </script>
 
 {% endblock %}
