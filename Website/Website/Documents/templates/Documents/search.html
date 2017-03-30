@@ -141,25 +141,34 @@
         	dateFormat: "yy-mm-dd"
         });
     });
+    
 	$('#asset_data').on('submit', function(event) {
 		console.log("asset_data");
 		event.preventDefault();
 		postForSearch('#asset_data', 'asset_table_parent');
 	});
+	
 	$('#document_data').on('submit', function(event) {
 		event.preventDefault();
 		postForSearch('#document_data', 'document_table_parent');
 	});
+	
 	$('#asset_search_tab')
 			.click(
 					function(event) {
 						document.getElementById('document_table_parent').style.display = "none";
 					});
+	
 	$('#document_search_tab')
 			.click(
 					function(event) {
 						document.getElementById('asset_table_parent').style.display = "none";
 					});
+	
+	$('#id_approval_agency').change(function(){
+		getForAsset('#id_approval_agency', '#id_asset_type');
+	});
+	
 	$(document).on(
 			'click',
 			'td',
@@ -173,6 +182,7 @@
 				asset_id_dict = {asset_id : $(event.target).text()};
 				getForDocument(asset_id_dict, data_table_parent);
 	        });
+	
 	$('#asset_to_csv').click(
 			function(event) {
 				var outputFile = 'export';
@@ -180,6 +190,7 @@
 				exportTableToCSV.apply(this, [
 						$('#asset_table_parent > table'), outputFile ]);
 			});
+	
 	$('#document_to_csv').click(
 			function(event) {
 				var outputFile = 'export';
@@ -205,7 +216,7 @@
 	        });
 
 	document.getElementById('id_document_type').onkeyup = function() {
-		postForAutoCompleteSearch()
+		postForAutoCompleteSearch('#id_document_type');
 	};
 </script>
 

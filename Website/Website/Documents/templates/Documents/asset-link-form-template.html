@@ -1,0 +1,45 @@
+<div class="col-sm-12 col-md-5">
+	<div class="row row-content">
+		<h3>Link Asset</h3>
+		<hr>
+		<form class="form-horizontal" action="" method="post"
+			id="asset_link_form">
+			{% csrf_token %} {% for field in asset_link_form %}
+			<div class="form-group">
+				<label class="control-label col-sm-4">{{field.label_tag}}</label>
+				<div class="col-sm-8">{{ field }}</div>
+			</div>
+			{% endfor %}
+			<div class="form-group hidden">
+				<label class="control-label col-sm-2"> asset_link_data</label>
+				<div class="col-sm-10">
+					<input name="search_type" value="asset_link_data">
+				</div>
+			</div>
+			<br />
+			<div class="form-group" style="margin-left: 40px"">
+				<button type="submit" class="btn btn-primary">Search</button>
+			</div>
+		</form>
+	</div>
+	<div class="row row-content">
+		<div id="not_found" style="display: none">
+			<p>No result found.</p>
+		</div>
+		<div id="asset_table_in_document_parent" style="display: none">
+			<table class="table table-hover col-sm-12">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Approval_agency</th>
+						<th>Serial_number</th>
+						<th>Tag_number</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

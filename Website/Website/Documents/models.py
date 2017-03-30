@@ -4,15 +4,9 @@ from datetime import datetime
 
 StatusChoices = (
     (None, "-----"),
-    ("Valid", "Valid"),
+    ("Active", "Active"),
     ("Sold", "Sold")
 )
-
-class AssetType(models.Model):
-    asset_type = models.CharField(max_length = 500)
-    
-    def __str__(self):
-        return self.asset_type
 
 class ApprovalAgency(models.Model):
     approval_agency = models.CharField(max_length = 500)
@@ -20,13 +14,13 @@ class ApprovalAgency(models.Model):
     def __str__(self):
         return self.approval_agency
 
-#not using this model any more
-class AssetDocument(models.Model):
-    asset = models.ForeignKey('Asset')
-    document = models.ForeignKey('Document')
+
+class AssetType(models.Model):
+    approval_agency = models.ForeignKey(ApprovalAgency)
+    asset_type = models.CharField(max_length = 500)
     
     def __str__(self):
-        return self.asset
+        return self.asset_type
 
 class DocumentType(models.Model):
     document_type = models.CharField(max_length = 500)

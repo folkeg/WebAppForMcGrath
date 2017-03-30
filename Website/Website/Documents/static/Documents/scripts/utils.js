@@ -1,10 +1,10 @@
-function postForAutoCompleteSearch() {
+function postForAutoCompleteSearch(id_document_type) {
 	$.ajax({
 			url : "#",
 			type : "POST",
-			data : $('#id_document_type').serialize(),
-			success : function(json) {
-				autoComplete(json);
+			data : $(id_document_type).serialize(),
+			success : function(document_type_data) {
+				autoComplete(document_type_data);
 			}
 	});
 };
@@ -14,39 +14,46 @@ function postForSearch(form, data_table_parent) {
 			url : "#",
 			type : "POST",
 			data : $(form).serialize(),
-			success : function(json) {
-				if (json == "Not found") {
+			success : function(search_result) {
+				if (search_result == "Not found") {
 					showNotFound(data_table_parent);
 				} else {
-					var attribute_array = arrangeAttribute(json[0]);
-					addData(json, attribute_array, data_table_parent);
+					var attribute_array = arrangeAttribute(data_table_parent);
+					addData(search_result, attribute_array, data_table_parent);
 				}
 			}
 	});
 };
 
-function getForDocument(data, data_table_parent) {
+function getForDocument(asset_id_dict, data_table_parent) {
 	$.ajax({
 			url : "#",
 			type : "GET",
-			data : data,
-			success : function(json) {
-				var arranged_attribute_name = arrangeAttribute(json[0]);
-				addData(json, arranged_attribute_name, data_table_parent, data);
+			data : asset_id_dict,
+			success : function(document_data) {
+				var attribute_array = arrangeAttribute(data_table_parent);
+				addData(document_data, attribute_array, data_table_parent, asset_id_dict);
 			}
 	});
 };
 
-function getForAssetEdit(data) {
+function getForAsset(id_approval_agency, id_asset_type) {
 	$.ajax({
 		url : "#",
 		type : "GET",
-		data : data,
-		success : function(json) {
-			var arranged_attribute_name = arrangeAttribute(json[0]);
-			addData(json, arranged_attribute_name, data_table_parent, data);
+		data : $(id_approval_agency).serialize(),
+		success : function(approval_agency_data) {
+			changeAssetTypeSelection(id_approval_agency, id_asset_type, approval_agency_data);
 		}
     });
+};
+
+function changeAssetTypeSelection(id_approval_agency, id_asset_type, approval_agency_data) {
+	$(id_asset_type).empty();
+	for(key in approval_agency_data) {
+		item = approval_agency_data[key];
+		$(id_asset_type).append($('<option>', {value: item['id'], text: item['asset_type']}));
+	}
 };
 
 function ajaxResponseError(xhr, erråmsg, err) {
@@ -118,7 +125,7 @@ function addData(result, attribute_array, data_table_parent, id_dict) {
 		$(data_table_parent).attr("data-target", '#' + id_dict['asset_id']);
 		var new_row = document.createElement('tr');
 		$(new_row).attr("id", "tr_table");
-		new_row.innerHTML = "<td colspan='10' style='padding:0px'><div class='accordian-body collapse in' id = '" + id_dict['asset_id'] + "'><table class='table'><thead><tr><th>Actions</th><th>#</th><th>Document_type</th><th>Document_date</th><th>Renewal_date</th><th>Manufacture_name</th><th>A_number</th><th>License_decal_number</th><th>Model_number</th><th>Document_description</th></tr></thead><tbody></tbody></table></div></td>";
+		new_row.innerHTML = "<td colspan='10' style='padding:0px'><div class='accordian-body collapse in' id = '" + id_dict['asset_id'] + "'><table class='table'><thead><tr><th>Actions</th><th>#</th><th>Document_type</th><th>Document_date</th><th>Renewal_date</th><th>A_number</th><th>License_decal_number</th><th>Model_number</th><th>Document_description</th></tr></thead><tbody></tbody></table></div></td>";
 		data_table_parent.parentElement.after(new_row);
 		currentTable = $(new_row).find('table')[0];
 	}
@@ -131,28 +138,35 @@ function addData(result, attribute_array, data_table_parent, id_dict) {
 	for (key in result) {
 		if (result.hasOwnProperty(key)) {
 			var item = result[key];
-			newRows += "<tr>";
-			if (data_table_parent == "asset_table_parent") {
-				newRows += '<th><span class="glyphicon glyphicon-pencil edit-asset"></span></th>';
+			console.log(item);
+            if (data_table_parent == "asset_table_parent") {
+				newRows += '<tr><th><span class="glyphicon glyphicon-pencil edit-asset"></span></th>';
 			}
-			else if (data_table_parent == "document_table_parent") {
-				newRows += '<th><span class="glyphicon glyphicon-pencil edit-document"></span></th>';
+			else if(data_table_parent.nodeName == "TD" || data_table_parent == "document_table_parent"){
+				newRows += '<tr><th><span class="glyphicon glyphicon-pencil edit-document"></span></th>';
+			}
+			else if(data_table_parent == "asset_table_in_document_parent") {
+				newRows += '<tr draggable="true" ondragstart="rowDrag(event)">';
 			}
 			for (var i = 0; i < attribute_array.length; i++) {
 				var attribute = attribute_array[i];
-				if (item.hasOwnProperty(attribute)) {
+				if (item.hasOwnProperty(attribute)) { 
 					if (data_table_parent == "asset_table_parent" && attribute == "id") {
 						newRows += "<td>" + "<a href='#' id='asset_id'>" + item[attribute] + "</a></td>";
 					} else {
-						console.log("here");
 						if(item[attribute] != null) {
 						    newRows += "<td>" + item[attribute] + "</td>";
 						}
 					}
 				}
 			}
+			if(data_table_parent == "asset_link_table_parent") {
+				newRows += "<td><input type='button' class='btn btn-danger btn-xs' value='Delete'></td>";
+			}
 			newRows += "</tr>";
 		}
+		//console.log(newRows);
+		//console.log(currentTable);
 		currentTable.tBodies[0].innerHTML = newRows;
 	}
 };
@@ -162,27 +176,29 @@ function showNotFound(data_table_parent) {
 	document.getElementById("not_found").style.display = "block";
 };
 
-function arrangeAttribute(item) {
-	if('approval_agency' in item) {
+function arrangeAttribute(data_table_parent) {
+	if(data_table_parent == 'asset_table_parent') {
 		return ['id','approval_agency', 'asset_type', 'manufacture_name', 'serial_number', 'tag_number', 'status'];
+	}
+	else if(data_table_parent == 'asset_table_in_document_parent' || data_table_parent == 'asset_link_table_parent') {
+		return ['id', 'approval_agency', 'serial_number', 'tag_number', 'status'];
 	}
 	else {
 		return ['id','document_type', 'document_date', 'renewal_date', 'a_number', 'license_decal_number', 'model_number', 'document_description'];
 	}
 }
 
-function autoComplete(result) {
+function autoComplete(document_type_data) {
 	var document_type_attributes = [];
-	for (key in result) {
-		if (result.hasOwnProperty(key)) {
-			var item = result[key];
+	for (key in document_type_data) {
+		if (document_type_data.hasOwnProperty(key)) {
+			var item = document_type_data[key];
 			document_type_attributes.push({
 				label : item['document_type'],
 				real_id : item['id']
 			});
 		}
 	}
-	console.log(document_type_attributes);
 	$('#id_document_type').autocomplete(
 		{
 			source : document_type_attributes,
@@ -191,6 +207,44 @@ function autoComplete(result) {
 		},
 	});
 }
+
+function checkAssetIdBeforeSubmit() {
+	var valueArray = [];
+	$('#asset_selected_table > tbody  > tr').each(function() {
+		valueArray.push($(this).find('td:first').text());
+	});
+	if(valueArray.length == 0) {
+		$('.alert').show();
+		$('.alert').attr('class', 'alert alert-danger');
+		$('.alert').css('font-weight', 'bold');
+		return false;
+	}
+	document.getElementById('asset_id').value = valueArray;	
+};
+
+function allowDrop(event) {
+	event.preventDefault();
+}
+
+function rowDrag(event) {
+	event.dataTransfer.setData("html", event.target.innerHTML);
+}
+
+function drop(event) {
+	event.preventDefault();
+	$('.alert').hide();
+	var row_data = document.createElement('tr');
+	row_data.innerHTML = event.dataTransfer.getData("html")
+			+ "<td><input type='button' class='btn btn-danger btn-xs' value='Delete'></td>";
+	$('#asset_selected_table > tbody').append(row_data);
+	var asset_id = $(row_data).find('td:first').text();
+}
+
+$(function() {
+	$('#id_document_date, #id_renewal_date').datepicker({
+		dateFormat : "yy-mm-dd"
+	});
+});
 
 function exportTableToCSV($table, filename) {
 	var $headers = $table.find('tr:has(th)');

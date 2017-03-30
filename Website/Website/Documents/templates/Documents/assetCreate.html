@@ -30,4 +30,11 @@
 		</div>
 	</div>
 </section>
+
+<script>
+$('#id_approval_agency').change(function(){
+	getForAsset('#id_approval_agency', '#id_asset_type');
+});
+</script>
+
 {% endblock %}

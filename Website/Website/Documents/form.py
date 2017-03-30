@@ -2,8 +2,7 @@ from django import forms
 from .models import Asset, Document, AssetType, ApprovalAgency, DocumentType, StatusChoices
 from django.contrib.auth.models import User
 
-class AssetCreateForm(forms.ModelForm): 
-    
+class AssetCreateForm(forms.ModelForm):   
     approval_agency = forms.ModelChoiceField(queryset = ApprovalAgency.objects.all())
     asset_type = forms.ModelChoiceField(queryset = AssetType.objects.all())
     
@@ -26,6 +25,13 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ['username', 'password']
 
+class DocEditForm(forms.ModelForm):
+    
+    class Meta:
+        model = Document
+        fields = ['document_date', 'renewal_date', 'a_number', 'license_decal_number', 'model_number', 'document_description']
+        
+    
 class AssetSearchForm(forms.Form):
     approval_agency = forms.ModelChoiceField(queryset = ApprovalAgency.objects.all(), required=False)
     asset_type = forms.ModelChoiceField(queryset = AssetType.objects.all(), required=False)
@@ -45,7 +51,10 @@ class DocSearchForm(forms.Form):
     description = forms.CharField(required=False)
 
 class AssetLinkForm(forms.Form):
+    approval_agency = forms.ModelChoiceField(queryset = ApprovalAgency.objects.all(), required=False)
     serial_number = forms.CharField(required=False)
     tag_number = forms.CharField(required=False)
+    
+    
 
         
