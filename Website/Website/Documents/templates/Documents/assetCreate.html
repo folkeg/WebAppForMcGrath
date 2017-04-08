@@ -23,7 +23,7 @@
 				{% csrf_token %}
 				{% include 'Documents/form-template.html' %}					
 					<div class="form-group" style="margin-left:40px"">
-						<button type="submit" class="btn btn-success">Save</button>
+						<button id="asset_create_submit_button" type="submit" class="btn btn-success">Save</button>
 					</div>
 				</form>
 			</div>
@@ -34,6 +34,11 @@
 <script>
 $('#id_approval_agency').change(function(){
 	getForAsset('#id_approval_agency', '#id_asset_type');
+});
+
+$("#asset_create_submit_button").click(function(event) {
+	 var confirm_button = confirm("Are you sure to create the new asset?");
+	 return confirm_button;
 });
 </script>
 

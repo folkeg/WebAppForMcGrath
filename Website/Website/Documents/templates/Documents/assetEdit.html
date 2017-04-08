@@ -26,12 +26,19 @@
 				{% csrf_token %}
 				{% include 'Documents/form-template.html' %}	
 					<div class="form-group" style="margin-left: 40px"">
-						<button type="submit" class="btn btn-danger">Update</button>
+						<button id="asset_update_submit_button" type="submit" class="btn btn-danger">Update</button>
 					</div>				
 				</form>
 			</div>
 		</div>
 	</div>
 </section>
+
+<script>
+$("#asset_update_submit_button").click(function(event) {
+	 var confirm_button = confirm("Are you sure to update the asset?");
+	 return confirm_button;
+});
+</script>
 
 {% endblock %}

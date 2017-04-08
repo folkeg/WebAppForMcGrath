@@ -138,7 +138,6 @@ function addData(result, attribute_array, data_table_parent, id_dict) {
 	for (key in result) {
 		if (result.hasOwnProperty(key)) {
 			var item = result[key];
-			console.log(item);
             if (data_table_parent == "asset_table_parent") {
 				newRows += '<tr><th><span class="glyphicon glyphicon-pencil edit-asset"></span></th>';
 			}

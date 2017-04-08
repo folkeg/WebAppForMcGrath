@@ -52,6 +52,7 @@ class Document(models.Model):
     license_decal_number = models.CharField(max_length = 500, blank = True)
     model_number = models.CharField(max_length = 500, blank = True)
     document_description = models.CharField(max_length = 500, blank = True)
+                           
     
     def get_absolute_url(self):
         return reverse('Documents:docCreate')

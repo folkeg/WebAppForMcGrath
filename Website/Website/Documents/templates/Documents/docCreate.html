@@ -61,7 +61,12 @@
 	});
 					
 	$("#document_create_submit_button").click(function(event) {
-		checkAssetIdBeforeSubmit();	
+		 var confirm_button = confirm("Are you sure to create the new document?");
+		 if (confirm_button == true) {
+			 checkAssetIdBeforeSubmit();
+		 } else {
+		     return false;
+		 }
 	}); 
 
 </script>
