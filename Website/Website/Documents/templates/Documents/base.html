@@ -37,9 +37,10 @@
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse"
 					data-target="#topNavBar">
-					<span class="sr-only">Toggle navigation</span> <span
-						class="icon-bar"></span> <span class="icon-bar"></span> <span
-						class="icon-bar"></span>
+					<span class="sr-only">Toggle navigation</span> 
+					<span class="icon-bar"></span> 
+					<span class="icon-bar"></span> 
+					<span class="icon-bar"></span>
 				</button>
 				<a class="navbar-brand" {% block link %}href="{% url 'Documents:main' %}"{% endblock %}><img
 					src="{% static 'Documents/images/logo.png' %}"></a>
@@ -47,13 +48,12 @@
 
 			<!-- Items  -->
 			<div class="collapse navbar-collapse" id="topNavBar">
-			<!--  
+
 				<ul class="nav navbar-nav">
-					<li><a href="#">About</a></li>
-					<li><a href="#">Services</a></li>
-					<li><a href="#">Contact</a></li>
+					<li><a href="https://www.mgrc.com/About">About</a></li>
+				    <li><a href="https://www.mgrc.com/Businesses">Business</a></li>
+				    <li><a href="https://www.mgrc.com/Contact">Contact</a></li>
 				</ul>
-			-->
 
 				<ul class="nav navbar-nav  navbar-right">
 					<li><a href="{% url 'Documents:logout' %}"> <span class="glyphicon glyphicon-off"

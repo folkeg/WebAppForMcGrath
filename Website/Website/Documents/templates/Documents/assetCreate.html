@@ -1,18 +1,13 @@
-{% extends 'Documents/base.html' %} 
-
-{% block body %}
+{% extends 'Documents/base.html' %} {% block body %}
 
 <!-- Content Section -->
 <section>
 	<div class="container">
-	    <div class="row row-content">
+		<div class="row row-content">
 			<ol class="breadcrumb">
-				<li	class="breadcrumb-item">
-					<a href=" {% url 'Documents:main' %}">Main Page</a>
-				</li>
-				<li	class="breadcrumb-item active">
-					Asset Create
-				</li>
+				<li class="breadcrumb-item"><a
+					href=" {% url 'Documents:main' %}">Main Page</a></li>
+				<li class="breadcrumb-item active">Asset Create</li>
 			</ol>
 		</div>
 		<div class="row">
@@ -20,10 +15,26 @@
 				<h3>Create Asset</h3>
 				<hr>
 				<form class="form-horizontal" action="" method="post">
-				{% csrf_token %}
-				{% include 'Documents/form-template.html' %}					
-					<div class="form-group" style="margin-left:40px"">
-						<button id="asset_create_submit_button" type="submit" class="btn btn-success">Save</button>
+					{% csrf_token %} 
+					{% for field in form %}
+					{% if field == form.approval_agency or field == form.asset_type or field == form.serial_number %}
+                    <div class="form-group">
+						<label class="control-label col-sm-4">{{field.label_tag}} *</label>
+						<div class="col-sm-8">{{ field }}</div>
+					</div>
+					{% else %}
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<span class="text-danger small">{{ field.errors }}</span>
+						</div>
+						<label class="control-label col-sm-4">{{ field.label_tag}}</label>
+						<div class="col-sm-8">{{ field }}</div>
+					</div>
+					{% endif %}
+					{% endfor %}
+					<div class="form-group" style="margin-left: 40px"">
+						<button id="asset_create_submit_button" type="submit"
+							class="btn btn-success">Save</button>
 					</div>
 				</form>
 			</div>
@@ -32,14 +43,14 @@
 </section>
 
 <script>
-$('#id_approval_agency').change(function(){
-	getForAsset('#id_approval_agency', '#id_asset_type');
-});
+	$('#id_approval_agency').change(function() {
+		getForAsset('#id_approval_agency', '#id_asset_type');
+	});
 
-$("#asset_create_submit_button").click(function(event) {
-	 var confirm_button = confirm("Are you sure to create the new asset?");
-	 return confirm_button;
-});
+	$("#asset_create_submit_button").click(function(event) {
+		var confirm_button = confirm("Are you sure to create the new asset?");
+		return confirm_button;
+	});
 </script>
 
 {% endblock %}

@@ -16,10 +16,17 @@
 				<form class="form-horizontal" action="" method="post"
 					id="document_create_form">
 					{% csrf_token %} {% for field in docform %}
+					{% if field == docform.document_type or field == docform.document_date %}
+                    <div class="form-group">
+						<label class="control-label col-sm-4">{{field.label_tag}} *</label>
+						<div class="col-sm-8">{{ field }}</div>
+					</div>
+                    {% else %}
 					<div class="form-group">
 						<label class="control-label col-sm-4">{{field.label_tag}}</label>
 						<div class="col-sm-8">{{ field }}</div>
 					</div>
+					{% endif %}
 					{% endfor %}
 					{% include 'Documents/asset-selected-table-template.html' %}
 					<div class="form-group hidden" style="margin-left: 40px"">
