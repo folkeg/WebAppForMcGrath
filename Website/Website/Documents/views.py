@@ -12,6 +12,7 @@ from django.http import HttpResponse, Http404
 import json
 from .data_access import SearchQuery, ObjectCreate, UpdateObject
 from django.core.urlresolvers import reverse_lazy
+from django.views.generic.detail import DetailView
 
 
 
@@ -51,7 +52,7 @@ class DocumentEditView(UpdateView):
             attributeList = ['approval_agency', 'serial_number', 'tag_number']            
             return SearchQuery().searchAssetOrDocumentObjects(request, attributeList, 'asset_search')
         
-        elif request.POST.get('asset_id'):
+        elif request.POST.get('document_date'):
             UpdateObject().updateLinkedAssetsByDocument(request, self.object)
                                 
         return super(UpdateView, self).post(request, *args, **kwargs)
@@ -108,8 +109,8 @@ class DocCreate(View):
         return render(request, self.template_name, {'docform' : docform, 'asset_link_form' : asset_link_form})
     
     def post(self, request):       
-        if request.POST.get("asset_id"):            
-            ObjectCreate().documentObjectCreate(request)                                   
+        if request.POST.get("document_date"):    
+            ObjectCreate().documentObjectCreate(request)                              
             return self.get(request)
         
         elif request.POST.get("document_type"):
@@ -157,16 +158,21 @@ class Search(View):
         else:            
             return HttpResponse(json.dumps("Error"), content_type="application/json")
               
-                
+@method_decorator(login_required, name='dispatch')
+class DocDetail(DetailView):
+    
+    model = Document
+    template_name = 'Documents/docDetail.html'
+       
+    def get(self, request, pk):
+        
+        return render(request, self.template_name, {'docFile' : self.get_object().document_file})
+    
+               
 @login_required(login_url='Documents:login')
 def main(request):      
      
     return render(request, 'Documents/mainPage.html')
-
-@method_decorator(login_required, name='dispatch')
-def docDetail(request):    
-       
-    return render(request, 'Documents/docDetail.html')
     
 def logoutuser(request):
     

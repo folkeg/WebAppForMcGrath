@@ -93,7 +93,7 @@
 					<table class="table">
 						<thead>
 							<tr>
-								<th>Actions</th>
+								<th>Edit</th>
 								<th>#</th>
 								<th>Approval_agency</th>
 								<th>Asset_type</th>
@@ -115,8 +115,8 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th>Actions</th>
-							<th>#</th>
+							<th>Edit</th>
+							<th>View File</th>
 							<th>Document_type</th>
 							<th>Document_date</th>
 							<th>Renewal_date</th>
@@ -143,7 +143,6 @@
     });
     
 	$('#asset_data').on('submit', function(event) {
-		console.log("asset_data");
 		event.preventDefault();
 		postForSearch('#asset_data', 'asset_table_parent');
 	});
@@ -214,9 +213,18 @@
 				var document_id = $(event.target).closest('tr').children('td:first').text();
 				window.location.href = "documentEdit/" + document_id;
 	        });
-
+    
+	$(document).on(
+			'click',
+			'#document_id',
+			function(event) {
+				var document_id = $(event.target).text();
+				window.location.href = "docDetail/" + document_id;
+	        });
+	
 	document.getElementById('id_document_type').onkeyup = function() {
 		postForAutoCompleteSearch('#id_document_type');
+	
 	};
 </script>
 

@@ -154,7 +154,12 @@ function addData(result, attribute_array, data_table_parent, id_dict) {
 						newRows += "<td>" + "<a href='#' id='asset_id'>" + item[attribute] + "</a></td>";
 					} else {
 						if(item[attribute] != null) {
-						    newRows += "<td>" + item[attribute] + "</td>";
+							if(data_table_parent.nodeName == "TD" || data_table_parent == "document_table_parent" && attribute == "id") {
+								newRows += "<td id='document_id'><a href='#'>" + item[attribute] + "</a></td>";
+							}
+							else {
+						        newRows += "<td>" + item[attribute] + "</td>";
+							}
 						}
 					}
 				}
@@ -201,23 +206,17 @@ function autoComplete(document_type_data) {
 	$('#id_document_type').autocomplete(
 		{
 			source : document_type_attributes,
-			select : function(e, ui) {
+			select : function(e, ui) {				
 				document.getElementById("document_type_id").value = ui.item.real_id;
 		},
 	});
 }
 
-function checkAssetIdBeforeSubmit() {
+function addAssetIdValues() {
 	var valueArray = [];
 	$('#asset_selected_table > tbody  > tr').each(function() {
 		valueArray.push($(this).find('td:first').text());
 	});
-	if(valueArray.length == 0) {
-		$('.alert').show();
-		$('.alert').attr('class', 'alert alert-danger');
-		$('.alert').css('font-weight', 'bold');
-		return false;
-	}
 	document.getElementById('asset_id').value = valueArray;	
 };
 

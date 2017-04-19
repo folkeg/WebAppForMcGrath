@@ -16,7 +16,7 @@ class DocCreateForm(forms.ModelForm):
     
     class Meta:
         model = Document
-        fields = ['document_type', 'document_date', 'renewal_date', 'a_number', 'license_decal_number', 'model_number', 'document_description']
+        fields = ['document_type', 'document_date', 'renewal_date', 'a_number', 'license_decal_number', 'model_number', 'document_description', 'document_file']
         
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -44,7 +44,6 @@ class DocSearchForm(forms.Form):
     document_type = forms.CharField(required=False)
     document_date = forms.DateField(required=False)
     renewal_date = forms.DateField(required=False)
-    manufacture_name = forms.CharField(required=False)
     a_number = forms.CharField(required=False)
     license_decal_number = forms.CharField(required=False)
     model_number = forms.CharField(required=False)

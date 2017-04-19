@@ -1,0 +1,37 @@
+{% extends 'Documents/base.html' %} 
+
+{% block link %} ref="{% url 'Documents:main' %}"{% endblock %}
+{% block body %}
+
+<section>
+	<div class="container">
+	    <div class="row row-content">
+			<ol class="breadcrumb">
+				<li	class="breadcrumb-item">
+					<a href=" {% url 'Documents:main' %}">Main Page</a>
+				</li>
+				<li	class="breadcrumb-item">
+					<a href=" {% url 'Documents:search' %}">Search</a>
+				</li>
+				<li	class="breadcrumb-item active">
+					Document File
+				</li>
+			</ol>
+		</div>
+		<div class="row">
+			<div class="col-sm-12 col-md-7">
+				<h3>{{docFile.name}}</h3>
+				<hr>
+				<object width="100%" height="500" data= "{{docFile.url}}" ></object>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+$(document).ready(function(){
+}
+</script>
+
+{% endblock %}
+

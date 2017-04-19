@@ -14,7 +14,7 @@
 				<h3>Create Document</h3>
 				<hr>
 				<form class="form-horizontal" action="" method="post"
-					id="document_create_form">
+					id="document_create_form" enctype="multipart/form-data">
 					{% csrf_token %} {% for field in docform %}
 					{% if field == docform.document_type or field == docform.document_date %}
                     <div class="form-group">
@@ -66,11 +66,11 @@
 	$('#asset_selected_table').on('click', 'input[type="button"]',function(event) {
 		$(this).closest('tr').remove();
 	});
-					
+			
 	$("#document_create_submit_button").click(function(event) {
 		 var confirm_button = confirm("Are you sure to create the new document?");
 		 if (confirm_button == true) {
-			 checkAssetIdBeforeSubmit();
+			 addAssetIdValues();
 		 } else {
 		     return false;
 		 }

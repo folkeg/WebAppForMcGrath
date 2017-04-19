@@ -44,7 +44,7 @@ class Asset(models.Model):
         return str("serial number: " + self.serial_number + " , tag number: " + self.tag_number)
 
 class Document(models.Model):
-    asset = models.ManyToManyField(Asset)
+    asset = models.ManyToManyField(Asset, blank=True)
     document_type = models.ForeignKey(DocumentType)
     document_date = models.DateField()
     renewal_date = models.DateField(blank = True, null=True)
@@ -52,7 +52,7 @@ class Document(models.Model):
     license_decal_number = models.CharField(max_length = 500, blank = True)
     model_number = models.CharField(max_length = 500, blank = True)
     document_description = models.CharField(max_length = 500, blank = True)
-                           
+    document_file = models.FileField(upload_to='uploads/%Y/%m/%d/', blank=True)
     
     def get_absolute_url(self):
         return reverse('Documents:docCreate')

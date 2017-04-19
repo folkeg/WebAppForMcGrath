@@ -63,7 +63,7 @@ $('#asset_selected_table').on('click', 'input[type="button"]',function(event) {
 $("#document_update_submit_button").click(function(event) {
 	var confirm_button = confirm("Are you sure to update the document?");
 	if (confirm_button == true) {
-	    checkAssetIdBeforeSubmit();
+	    addAssetIdValues();
 	} else {
 	    return false;
 	}	

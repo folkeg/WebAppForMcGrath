@@ -1,0 +1,5 @@
+"#","Approval_agency","Asset_type","Manufacture_name","Serial_number","Tag_number","Status"
+"1","DMV","NonRental Capital Asset.Autos.None","M1","","",""
+"2","DSA","Rental Equipment.Floors.None","M1","","","Active"
+"3","DSA","Rental Equipment.Floors.None","M2","S9","T6","Active"
+""

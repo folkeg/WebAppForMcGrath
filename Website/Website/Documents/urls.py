@@ -21,5 +21,6 @@ urlpatterns = [
     # Documents/main/
     url(r'^main/$', views.main, name='main'),
     # Documents/main/search/docDetail
-    url(r'^main/search/docDetail$', views.docDetail, name='docDetail'),
+    url(r'^main/search/docDetail/(?P<pk>[0-9]+)/$', views.DocDetail.as_view(), name='docDetail'),
+    
 ]

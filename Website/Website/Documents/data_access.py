@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from datetime import date
 import json
 from CodeWarrior.Standard_Suite import document
+from Finder.Files import document_file
 
 class SearchQuery():
     
@@ -31,16 +32,23 @@ class SearchQuery():
                 contentDict[field] = request.POST.get(field)
         
         if searchType == "asset_search":
-            result = Asset.objects.filter(**contentDict)
+            if contentDict:
+                result = Asset.objects.filter(**contentDict)
+            else:
+                print "limit10"
+                result = Asset.objects.all()[:10]
             
         elif searchType == "document_search":
-            result = Document.objects.filter(**contentDict)
+            if contentDict:
+                result = Document.objects.filter(**contentDict)
+            else:
+                result = Document.objects.all()[:10]
         
         if not result.exists():
             return HttpResponse(json.dumps("Not found"), content_type="application/json")
             
         return HttpResponse(json.dumps([ItemConverter().convertToDict(item, searchType) for item in result.values()]), content_type="application/json")                                           
-
+        
 class ItemConverter():
     def convertToJsonSerial(self, obj, itemDict):
         item = itemDict[obj]
@@ -73,27 +81,31 @@ class ObjectCreate():
                                      a_number = request.POST.get("a_number"),
                                      license_decal_number = request.POST.get("license_decal_number"),
                                      model_number = request.POST.get("model_number"),
-                                     document_description = request.POST.get("document_description"))
+                                     document_description = request.POST.get("document_description"),
+                                     document_file = request.FILES["document_file"])
 
         documentObject.save()
         
-        assetIdArray = request.POST.get("asset_id").split(",")                  
-        for assetId in assetIdArray:
-            asset_id = ItemConverter().normalizeUnicodeString(assetId)
-            currentAsset = Asset.objects.get(pk=asset_id)
-            documentObject.asset.add(currentAsset)
-        
+        if request.POST.get("asset_id"):
+            assetIdArray = request.POST.get("asset_id").split(",")                  
+            for assetId in assetIdArray:
+                asset_id = ItemConverter().normalizeUnicodeString(assetId)
+                currentAsset = Asset.objects.get(pk=asset_id)
+                documentObject.asset.add(currentAsset)
+            
         documentObject.save()           
         
 class UpdateObject():
     def updateLinkedAssetsByDocument(self, request, documentObject):  
         
-        assetIdArray = request.POST.get("asset_id").split(",")
         documentObject.asset.clear()
-        for assetId in assetIdArray:
-            asset_id = ItemConverter().normalizeUnicodeString(assetId)
-            currentAsset = Asset.objects.get(pk=asset_id)
-            documentObject.asset.add(currentAsset)
+        
+        if request.POST.get("asset_id"):
+            assetIdArray = request.POST.get("asset_id").split(",")
+            for assetId in assetIdArray:
+                asset_id = ItemConverter().normalizeUnicodeString(assetId)
+                currentAsset = Asset.objects.get(pk=asset_id)
+                documentObject.asset.add(currentAsset)
         
         documentObject.save()
              
