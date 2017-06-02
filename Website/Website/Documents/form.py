@@ -27,9 +27,11 @@ class UserForm(forms.ModelForm):
 
 class DocEditForm(forms.ModelForm):
     
+    document_type = forms.CharField(max_length=500)
+    
     class Meta:
         model = Document
-        fields = ['document_date', 'renewal_date', 'a_number', 'license_decal_number', 'model_number', 'document_description']
+        fields = ['document_type', 'document_date', 'renewal_date', 'a_number', 'license_decal_number', 'model_number', 'document_description', 'document_file']
         
     
 class AssetSearchForm(forms.Form):
@@ -43,7 +45,8 @@ class AssetSearchForm(forms.Form):
 class DocSearchForm(forms.Form):
     document_type = forms.CharField(required=False)
     document_date = forms.DateField(required=False)
-    renewal_date = forms.DateField(required=False)
+    renewal_date_start = forms.DateField(required=False)
+    renewal_date_end = forms.DateField(required=False)
     a_number = forms.CharField(required=False)
     license_decal_number = forms.CharField(required=False)
     model_number = forms.CharField(required=False)

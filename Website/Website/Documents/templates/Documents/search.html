@@ -14,18 +14,18 @@
 		</div>
 		<div class="row row-content">
 			<ul class="nav nav-tabs">
-				<li class="active" id="asset_search_tab"><a
-					href="#asset_search" data-toggle="tab"><h4>Asset Search</h4></a></li>
-				<li id="document_search_tab"><a href="#document_search"
+				<li class="active" id="document_search_tab"><a
+					href="#document_search" data-toggle="tab"><h4>Document Search</h4></a></li>
+				<li id="asset_search_tab"><a href="#asset_search"
 					data-toggle="tab">
-						<h4>Document Search</h4>
+						<h4>Asset Search</h4>
 				</a></li>
 			</ul>
 			<div class="tab-content">
 				<div>
 					<p style="padding: 20px;"></p>
 				</div>
-				<div class="tab-pane fade in active" id="asset_search">
+				<div class="tab-pane fade" id="asset_search">
 					<form class="form-horizontal" action="" method="post"
 						id="asset_data">
 						{% csrf_token %} {% for field in assetform %}
@@ -51,7 +51,7 @@
 						</div>
 					</form>
 				</div>
-				<div class="tab-pane fade" id="document_search">
+				<div class="tab-pane fade in active" id="document_search">
 					<form class="form-horizontal" action="" method="post"
 						id="document_data">
 						{% csrf_token %} {% for field in docform %}
@@ -136,8 +136,8 @@
 
 
 <script>
-    $(function() {
-        $('#id_document_date, #id_renewal_date').datepicker({
+    $(document).ready(function() {
+        $('#id_document_date, #id_renewal_date_start, #id_renewal_date_end').datepicker({
         	dateFormat: "yy-mm-dd"
         });
     });
@@ -149,83 +149,84 @@
 	
 	$('#document_data').on('submit', function(event) {
 		event.preventDefault();
+		var document_type_text = $('#id_document_type').val();
+        var document_type_id = $('#document_type_id').val();
+	    checkDocumentTypeValid(document_type_text, document_type_id, 'document_search');
 		postForSearch('#document_data', 'document_table_parent');
 	});
 	
-	$('#asset_search_tab')
-			.click(
-					function(event) {
-						document.getElementById('document_table_parent').style.display = "none";
-					});
+	$('#asset_search_tab').click(function(event) {
+		$('#document_table_parent').css('display','none');
+	});
 	
-	$('#document_search_tab')
-			.click(
-					function(event) {
-						document.getElementById('asset_table_parent').style.display = "none";
-					});
+	$('#document_search_tab').click(function(event) {
+		$('#asset_table_parent').css('display','none');
+	});
 	
-	$('#id_approval_agency').change(function(){
+	$('#asset_to_csv').click(function(event) {
+		postForLog("asset table download");
+		var outputFile = 'export';
+		outputFile = outputFile.replace('.csv', '') + '.csv';
+		exportTableToCSV.apply(this, [$('#asset_table_parent > table'), outputFile ]);
+	});
+	
+	$('#document_to_csv').click(function(event) {
+		postForLog("asset table download");
+		var outputFile = 'export';
+		outputFile = outputFile.replace('.csv', '') + '.csv';
+		exportTableToCSV.apply(this, [$('#document_table_parent > table'), outputFile ]);
+	});
+	
+	$('#id_approval_agency').change(function() {
 		getForAsset('#id_approval_agency', '#id_asset_type');
 	});
 	
-	$(document).on(
-			'click',
-			'td',
-			function(event) {
-				if(event.target.parentElement.hasAttribute('data-toggle')) {
-					event.preventDefault();
-					return;
-				}
-				event.preventDefault();
-				var data_table_parent = event.target.parentElement;
-				asset_id_dict = {asset_id : $(event.target).text()};
-				getForDocument(asset_id_dict, data_table_parent);
-	        });
-	
-	$('#asset_to_csv').click(
-			function(event) {
-				var outputFile = 'export';
-				outputFile = outputFile.replace('.csv', '') + '.csv';
-				exportTableToCSV.apply(this, [
-						$('#asset_table_parent > table'), outputFile ]);
-			});
-	
-	$('#document_to_csv').click(
-			function(event) {
-				var outputFile = 'export';
-				outputFile = outputFile.replace('.csv', '') + '.csv';
-				exportTableToCSV.apply(this, [
-						$('#document_table_parent > table'), outputFile ]);
-			});
-	
-	$(document).on(
-			'click',
-			'.edit-asset',
-			function(event) {
-				var asset_id = $(event.target).closest('tr').children('td:first').text();
-				window.location.href = "assetEdit/" + asset_id;
-	        });
-	
-	$(document).on(
-			'click',
-			'.edit-document',
-			function(event) {
-				var document_id = $(event.target).closest('tr').children('td:first').text();
-				window.location.href = "documentEdit/" + document_id;
-	        });
-    
-	$(document).on(
-			'click',
-			'#document_id',
-			function(event) {
-				var document_id = $(event.target).text();
-				window.location.href = "docDetail/" + document_id;
-	        });
-	
-	document.getElementById('id_document_type').onkeyup = function() {
+	$('#id_document_type').keyup(function() {
 		postForAutoCompleteSearch('#id_document_type');
 	
-	};
+	});
+	
+	$(document).on(
+		'click',
+		'.edit-asset',
+		function(event) {
+			postForLog("Edit Asset");
+			var asset_id = $(event.target).closest('tr').children('td:first').text();
+			window.location.href = "assetEdit/" + asset_id;
+        });
+	
+	$(document).on(
+		'click',
+		'.edit-document',
+		function(event) {
+			postForLog("Edit Document");
+			var document_id = $(event.target).closest('tr').children('td:first').text();
+			window.location.href = "documentEdit/" + document_id;
+        });
+    
+	$(document).on(
+		'click',
+		'#document_id',
+		function(event) {
+			postForLog("Document File Viewed");
+			var document_id = $(event.target).text();
+			window.location.href = "docDetail/" + document_id;
+        });
+	
+	$(document).on(
+		'click',
+		'td',
+		function(event) {
+			if(event.target.parentElement.hasAttribute('data-toggle')) {
+				event.preventDefault();
+				return;
+			}
+			event.preventDefault();
+			var data_table_parent = event.target.parentElement;
+			asset_id_dict = {asset_id : $(event.target).text()};
+			getForDocument(asset_id_dict, data_table_parent);
+        });
+
 </script>
 
 {% endblock %}

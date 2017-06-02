@@ -124,3 +124,24 @@ button {
 	overflow-y: auto;
 }
 
+.warning {
+    border: 1px solid;
+    margin: 10px 0px;
+    color: #9F6000;
+    background-repeat: no-repeat;
+    background-position: 10px center;
+    background-color: #FEEFB3;
+    padding-left: 10px; padding-top: 5px; width: 250px; margin-left: 180px
+}
+
+input:invalid {
+	  outline: none;
+      border-color: red;
+      box-shadow: 0 0 10px red;
+}
+
+select:invalid {
+	  outline: none;
+      border-color: #9ecaed;
+      box-shadow: 0 0 10px red;
+}

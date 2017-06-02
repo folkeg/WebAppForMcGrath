@@ -15,21 +15,30 @@
 				<hr>
 				<form class="form-horizontal" action="" method="post"
 					id="document_create_form" enctype="multipart/form-data">
-					{% csrf_token %} {% for field in docform %}
-					{% if field == docform.document_type or field == docform.document_date %}
-                    <div class="form-group">
+					{% csrf_token %} 
+					{% for field in docform %} 
+					{% if field == docform.document_type %}
+					<div class="form-group">
 						<label class="control-label col-sm-4">{{field.label_tag}} *</label>
 						<div class="col-sm-8">{{ field }}</div>
 					</div>
-                    {% else %}
+					<div class="warning" style="display: none">
+						<p>Please enter the document type</p>			
+					</div>
+					{% elif field == docform.document_date %}
+					<div class="form-group">
+                        <label class="control-label col-sm-4">{{field.label_tag}} *</label>
+						<div class="col-sm-8">{{ field }}</div>
+					</div>
+					{% else %}
 					<div class="form-group">
 						<label class="control-label col-sm-4">{{field.label_tag}}</label>
 						<div class="col-sm-8">{{ field }}</div>
 					</div>
-					{% endif %}
-					{% endfor %}
+					{% endif %} 
+				    {% endfor %} 
 					{% include 'Documents/asset-selected-table-template.html' %}
-					<div class="form-group hidden" style="margin-left: 40px"">
+					<div class="form-group hidden" style="margin-left: 40px">
 						<label class="control-label col-sm-4"> document type id:</label>
 						<div class="col-sm-8">
 							<input id="document_type_id" name="document_type_id">
@@ -41,10 +50,10 @@
 							<input id="asset_id" name="asset_id">
 						</div>
 					</div>
-					<br>
-					<br>
+					<br> <br>
 					<div class="form-group" style="margin-left: 40px"">
-						<button id="document_create_submit_button" type="submit" class="btn btn-success">Save</button>
+						<button id="document_create_submit_button" type="submit"
+							class="btn btn-success">Save</button>
 					</div>
 				</form>
 			</div>
@@ -54,27 +63,48 @@
 </section>
 
 <script>
+    $(document).ready(function() {
+        $('#id_document_date, #id_renewal_date').datepicker({
+    	    dateFormat: "yy-mm-dd"
+        });
+    });
+
+
 	$('#id_document_type').keyup(function() {
 		postForAutoCompleteSearch('#id_document_type');
 	});
+
+	$('#id_document_type').focusout(function() {
+		var document_type_text = $(this).val();
+        var document_type_id = $('#document_type_id').val();
+	    if(checkDocumentTypeValid(document_type_text, document_type_id, 'document_create')) {
+	    	//postForOCRCoordinate('#document_type_id');
+	    }
+	});
 	
+	$("#id_document_file").change(function() {
+		var formData = new FormData();
+		// Attach file
+		formData.append('document_file_entry', $('input[type=file]')[0].files[0]); 
+		formData.append('document_type_for_ocr', $('#document_type_id').val());
+		//postForOCR(formData);
+	}); 
+
 	$('#asset_link_form').on('submit', function(event) {
 		event.preventDefault();
-		postForSearch('#asset_link_form', 'asset_table_in_document_parent');
+		postForSearch('#asset_link_form', 'asset_link_table_parent');
 	});
 
 	$('#asset_selected_table').on('click', 'input[type="button"]',function(event) {
 		$(this).closest('tr').remove();
-	});
-			
-	$("#document_create_submit_button").click(function(event) {
-		 var confirm_button = confirm("Are you sure to create the new document?");
-		 if (confirm_button == true) {
-			 addAssetIdValues();
-		 } else {
-		     return false;
-		 }
-	}); 
+    });
+	
+	$('#asset_link_table').on('click', 'input[type="button"]',function(event) {
+		setAssetSelectedTableData(this);
+    });
 
+	$("#document_create_submit_button").click(function(event) {
+		return showConfirmationBox("document");
+	});
 </script>
 {% endblock %}

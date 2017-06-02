@@ -48,9 +48,9 @@
 	});
 
 	$("#asset_create_submit_button").click(function(event) {
-		var confirm_button = confirm("Are you sure to create the new asset?");
-		return confirm_button;
+		return showConfirmationBox("Asset");
 	});
+	
 </script>
 
 {% endblock %}

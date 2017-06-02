@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from . import views
 
+
 app_name = 'Documents'
 
 urlpatterns = [
@@ -19,7 +20,7 @@ urlpatterns = [
     # Documents/logoutuser/
     url(r'^logoutuser/$', views.logoutuser, name='logout'),
     # Documents/main/
-    url(r'^main/$', views.main, name='main'),
+    url(r'^main/$', views.MainPage.as_view(), name='main'),
     # Documents/main/search/docDetail
     url(r'^main/search/docDetail/(?P<pk>[0-9]+)/$', views.DocDetail.as_view(), name='docDetail'),
     

@@ -27,13 +27,13 @@ class DocumentType(models.Model):
     document_type_desc = models.CharField(max_length = 500, blank = True)
     
     def __str__(self):
-        return self.document_type
+        return self.document_type + " " + self.document_type_desc
         
 class Asset(models.Model):
     approval_agency = models.ForeignKey(ApprovalAgency)
     asset_type = models.ForeignKey(AssetType)
     manufacture_name = models.CharField(max_length = 500, blank = True)
-    serial_number = models.CharField(max_length = 500, blank = True)
+    serial_number = models.CharField(max_length = 500)
     tag_number = models.CharField(max_length = 500, blank = True)
     status = models.CharField(max_length = 500, choices = StatusChoices, blank =True)
     
@@ -58,7 +58,39 @@ class Document(models.Model):
         return reverse('Documents:docCreate')
     
     def __str__(self):
-        return  str(self.id)
+        return  str(self.id) + " " + str(self.document_date) + " " + str(self.renewal_date) + " " + str(self.a_number) + " " + str(self.license_decal_number) + " " + str(self.model_number) + " " +str(self.document_description)
 
-
+class OCRCoordinates(models.Model):
+    document_type = models.ForeignKey(DocumentType)
+    document_date_left = models.CharField(max_length = 500)
+    
+    document_date_top = models.CharField(max_length = 500)
+    document_date_right = models.CharField(max_length = 500)
+    
+    document_date_bottom = models.CharField(max_length = 500)
+    document_date_letterset = models.CharField(max_length = 500, blank = True)
+    document_date_Regex = models.CharField(max_length = 500, blank = True)
+    
+    document_date_MarkingType = models.CharField(max_length = 500, blank = True)
+    locument_date_texttype = models.CharField(max_length = 500, blank = True)
+    
+    license_decal_left = models.CharField(max_length = 500)
+    license_decal_top = models.CharField(max_length = 500)
+    license_decal_right = models.CharField(max_length = 500)
+    license_decal_bottom = models.CharField(max_length = 500)
+    license_decal_letterset = models.CharField(max_length = 500, blank = True)
+    license_decal_Regex = models.CharField(max_length = 500, blank = True)
+    license_decal_Markingtype = models.CharField(max_length = 500, blank = True)
+    license_decal_texttype = models.CharField(max_length = 500, blank = True)
+    
+    renewal_date_left = models.CharField(max_length = 500)
+    renewal_date_top = models.CharField(max_length = 500)
+    renewal_date_right = models.CharField(max_length = 500)
+    renewal_date_bottom = models.CharField(max_length = 500)
+    renewal_date_letterset = models.CharField(max_length = 500, blank = True)
+    renewal_date_regex = models.CharField(max_length = 500, blank = True)
+    renewal_date_texttype = models.CharField(max_length = 500, blank = True)
+    
+    def __str__(self):
+        return str(self.id) + " " + str(self.document_type) + " " + str(self.document_date_top)
 

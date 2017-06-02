@@ -7,16 +7,30 @@
 		<div class="row row-content">
 			<div class="col-lg-12">
 
-				<h3>Welcome to McGrath RentCorp</h3>
+				<h3>Document Management System</h3>
 				<hr/>
 				<br/>
 				<br/>
-				<a href=" {% url 'Documents:search' %}" class="btn btn-primary">Search</a>
-				<a href=" {% url 'Documents:assetCreate' %}" class="btn btn-info">Create
-					Asset</a> <a href=" {% url 'Documents:docCreate' %}"
-					class="btn btn-success">Create Document</a>
+				<a href=" {% url 'Documents:search' %}" class="btn btn-primary" id = "primary">Search</a>
+				<a href=" {% url 'Documents:assetCreate' %}" class="btn btn-info" id = "info">Create Asset</a> 
+				<a href=" {% url 'Documents:docCreate' %}" class="btn btn-success" id = "success">Create Document</a>
+				
 			</div>
 		</div>
 	</div>
 </section>
+<script>
+$(".btn").click(function(event) {
+	postForLog($(event.target).text());
+})
+
+$(document).ready(function() {
+	var flag = "{{flag}}";
+	if (flag == "user") {
+	    $("#info").remove();
+	    $("#success").remove();
+	}
+});
+
+</script>
 {% endblock %}

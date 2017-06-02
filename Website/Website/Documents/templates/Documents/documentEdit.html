@@ -22,17 +22,35 @@
 			<div class="col-sm-12 col-md-7">
 				<h3>Document Detail</h3>
 				<hr>
-				<form class="form-horizontal" action="" method="post">
+				<form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
 				{% csrf_token %}
-				{% include 'Documents/form-template.html' %}	
-				{% include 'Documents/asset-selected-table-template.html' %}
-				    <div class="form-group hidden" style="margin-left: 40px"">
-						<label class="control-label col-sm-2"> asset id:</label>
-						<div class="col-sm-10">
-							<input id="asset_id" name="asset_id">
-						</div>
+				{% for field in form %}
+				{% if field == form.document_type %}
+					<div class="form-group">
+						<label class="control-label col-sm-4">{{field.label_tag}}</label>
+						<div class="col-sm-8">{{ field }}</div>
 					</div>
-					<div class="form-group" style="margin-left: 40px"">
+					<div class="warning" style="display: none">
+						<p>Please enter the document type</p>			
+					</div>					
+				{% else %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">{{ field.label_tag }}</label>
+                        <div class="col-sm-8">{{ field }}</div>
+                    </div>
+                {% endif %} 
+                {% endfor %}	
+				{% include 'Documents/asset-selected-table-template.html' %}
+				    <div class="form-group hidden" style="margin-left: 40px">
+						<input id="asset_id" name="asset_id">
+					</div>
+					<div class="form-group hidden" style="margin-left: 40px">
+						<input id="document_type_id" name="document_type_id">
+					</div>
+					<div class="form-group hidden" style="margin-left: 40px">
+						<input id="document_file_content" name="document_file_content">
+					</div>
+					<div class="form-group" style="margin-left: 40px">
 						<button id="document_update_submit_button" type="submit" class="btn btn-danger">Update</button>
 					</div>				
 				</form>
@@ -44,16 +62,53 @@
 
 <script>
 $(document).ready(function(){
-	var attribute_array = arrangeAttribute('asset_link_table_parent');
+	
+	//add linked asset table
+	var attribute_array = arrangeAttribute('asset_selected_table_parent');
 	var temp_result = '{{ asset_objects }}';
 	var result = temp_result.replace(/(&quot\;)/g,"\"");
 	var jsonObj = $.parseJSON(result);
-	addData(jsonObj, attribute_array, 'asset_link_table_parent');
+	addData(jsonObj, attribute_array, 'asset_selected_table_parent');
+	
+	//add document type id before changing id_document_type_text
+	var id_document_type = $('#id_document_type').val();
+	$('#document_type_id').val(id_document_type);
+	
+	//add document type_text
+	var document_type_text = '{{document_type_object}}';
+	$('#id_document_type').val(document_type_text.split(" ")[0]);
+	
+	//change document_file_text
+	var current_file = $('#id_document_file').closest('div').find('a');
+	var changed_text = current_file.text().split("/").slice(-1)[0];
+	$('#id_document_file').closest('div').find('a').text(changed_text);
+	$('#id_document_file').closest('div').find('a').append('<br/>');
+
+});
+
+$('#id_document_file').change(function() {
+	$('#document_file_content').val('updated_file');
+});
+
+$('#id_document_type').keyup(function() {
+	postForAutoCompleteSearch('#id_document_type');
+});
+
+$('#id_document_type').focusout(function() {
+	var document_type_text = $(this).val();
+    var document_type_id = $('#document_type_id').val();
+    if (checkDocumentTypeValid(document_type_text, document_type_id, 'document_edit')) {
+    	//postForOCRCoordinate('#document_type_id');
+    }
 });
 
 $('#asset_link_form').on('submit', function(event) {
 	event.preventDefault();
-	postForSearch('#asset_link_form', 'asset_table_in_document_parent');
+	postForSearch('#asset_link_form', 'asset_link_table_parent');
+});
+
+$('#asset_link_table').on('click', 'input[type="button"]',function(event) {
+	setAssetSelectedTableData(this);
 });
 
 $('#asset_selected_table').on('click', 'input[type="button"]',function(event) {
