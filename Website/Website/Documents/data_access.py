@@ -4,8 +4,8 @@ from datetime import date
 from Finder.Files import document_file
 import json, requests, csv, datetime
 
-class SearchQuery():
-    
+# define functions that query database and return Http response with json file 
+class SearchQuery():   
     def searchOCRCoordinatesByDocumentType(self, document_type):
         result = OCRCoordinates.objects.filter(document_type = document_type)
         return result
@@ -43,10 +43,10 @@ class SearchQuery():
             if request.POST.get("manufacture_name"):            
                 result = result.filter(manufacture_name__contains = request.POST.get("manufacture_name"))
             
-            elif request.POST.get("serial_number"):            
+            if request.POST.get("serial_number"):            
                 result = result.filter(serial_number__contains = request.POST.get("serial_number"))
             
-            elif request.POST.get("tag_number"):            
+            if request.POST.get("tag_number"):            
                 result = result.filter(tag_number__contains = request.POST.get("tag_number"))
             
         elif searchType == "document_search":
@@ -58,13 +58,13 @@ class SearchQuery():
             if request.POST.get("description"):
                 result = result.filter(document_description__contains = request.POST.get("description"))
             
-            elif request.POST.get("a_number"):
+            if request.POST.get("a_number"):
                 result = result.filter(a_number__contains = request.POST.get("a_number"))
             
-            elif request.POST.get("license_decal_number"):
+            if request.POST.get("license_decal_number"):
                 result = result.filter(license_decal_number__contains = request.POST.get("license_decal_number"))
             
-            elif request.POST.get("model_number"):
+            if request.POST.get("model_number"):
                 result = result.filter(model_number__contains = request.POST.get("model_number"))
             
             renewal_date_start = request.POST.get("renewal_date_start")
@@ -85,12 +85,15 @@ class SearchQuery():
         return HttpResponse(json.dumps([ItemConverter().convertToDict(item, searchType) for item in result.values()]), content_type="application/json")                                           
         
 class ItemConverter():
+    
+    # convert Date to json serial 
     def convertToJsonSerial(self, obj, itemDict):
         item = itemDict[obj]
         if isinstance(item, date):
             serial = item.isoformat()
             itemDict[obj] = serial
     
+    # convert all Django objects to dictionary
     def convertToDict(self, item, search_type):
         itemDict = dict(item)
         if search_type == "asset_search":
@@ -102,17 +105,22 @@ class ItemConverter():
             self.convertToJsonSerial('renewal_date', itemDict)      
             itemDict['document_type'] = DocumentType.objects.get(id=item['document_type_id']).document_type
             itemDict['document_type_desc'] = DocumentType.objects.get(id=item['document_type_id']).document_type_desc    
-             
+        
+        elif search_type == "ocr_search":
+            self.convertToJsonSerial('document_date', itemDict)
+            self.convertToJsonSerial('renewal_date', itemDict)           
         return itemDict
     
+    # normalize Unicode String coming from front end
     def normalizeUnicodeString(self, x):
         return str(x) if isinstance(x, unicode) else x
-    
-class DataExtract():
-    def ocrExtract(self, filename):
-        
-        return None
-    
+   
+class OCRExtract():
+    def getDocumentValuesByOCR(self, coordinates, filename):
+        result = " "
+        return HttpResponse(json.dumps([ItemConverter().convertToDict(item, 'ocr_search') for item in result.values()]), content_type="application/json") 
+
+# Create Document Object
 class ObjectCreate():
     def documentObjectCreate(self, request):
          
@@ -135,7 +143,8 @@ class ObjectCreate():
                 documentObject.asset.add(currentAsset)
             
         documentObject.save()      
-        
+ 
+#Update Document Object       
 class ObjectUpdate():
     def updateObject(self, request, documentObject):  
         
@@ -163,6 +172,7 @@ class ObjectUpdate():
         
         documentObject.save()
 
+# Record User Activity
 class UserActivityLog():
     def logUserActivity(self, username, event):
         logDict = {}

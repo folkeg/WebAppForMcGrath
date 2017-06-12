@@ -11,7 +11,9 @@ function postForOCRCoordinate(document_type_id) {
 			type : "POST",
 			data : $(document_type_id).serialize(),
 			success : function(document_type_data) {
-				
+				if(!jQuery.isEmptyObject(document_type_data)) {
+					addOCRData(document_type_data);
+				}
 			}
 	});
 }; 
@@ -45,7 +47,10 @@ function postForOCR(formData) {
         enctype: 'multipart/form-data',
         processData: false,
 		success : function(document_info) {
-			
+			$('#ocr_progress').hide();
+			if(!jQuery.isEmptyObject(document_type_data)) {
+				addOCRData(document_type_data);
+			}
 		}
     });
 };
@@ -185,6 +190,16 @@ $.ajaxSetup({
 		}
 	}
 });
+
+function addOCRData(result) {
+	var attribute = ['document_date', 'renewal_date', 'a_number', 'license_decal_number', 'model_number'];
+	for (item in attribute) {
+		if(result[item]) {
+			$(item).val(result[item]);
+		}
+	}
+}
+
 
 function addData(result, attribute_array, data_table_parent, id_dict) {
 	var current_table = "";

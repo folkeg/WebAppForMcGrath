@@ -7,6 +7,7 @@ app_name = 'Documents'
 urlpatterns = [
     # Documents/main/search/assetEdit/
     url(r'^main/search/assetEdit/(?P<pk>[0-9]+)/$', views.AssetEditView.as_view(), name='assetEdit'),
+    
     # Documents/main/search/documentEdit/
     url(r'^main/search/documentEdit/(?P<pk>[0-9]+)/$', views.DocumentEditView.as_view(), name='documentEdit'),
     # Documents/main/assetCreate
